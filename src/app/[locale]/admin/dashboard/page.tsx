@@ -170,7 +170,7 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
       </div>
 
       {/* Charts */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: 24, marginBottom: 48 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))', gap: 24, marginBottom: 48 }}>
         <div className="glass-card-dashboard">
           <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 32, color: 'white' }}>📈 {loc === 'ar' ? 'نشاط الاستيراد' : 'Import Activity Velocity'}</h3>
           <div style={{ width: '100%', height: 300 }}>
@@ -228,7 +228,7 @@ export default function DashboardPage({ params }: { params: Promise<{ locale: st
       </div>
 
       {/* Activity */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: 24 }}>
         <div className="glass-card-dashboard" style={{ padding: 24 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 24, color: 'white' }}>📥 {loc === 'ar' ? 'أحدث الطلبات' : 'Recent Inbound Requests'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

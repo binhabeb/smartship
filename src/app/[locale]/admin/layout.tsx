@@ -29,6 +29,18 @@ export default function AdminLayout({
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) setIsCollapsed(true);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<(ImportRequest | Shipment | any)[]>([]);
@@ -139,14 +151,24 @@ export default function AdminLayout({
         ::-webkit-scrollbar-thumb:hover { background: var(--elec-blue-glow); }
       `}</style>
 
+      {/* Sidebar Overlay on Mobile */}
+      {isMobile && !isCollapsed && (
+        <div 
+          onClick={() => setIsCollapsed(true)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 95, backdropFilter: 'blur(5px)' }} 
+        />
+      )}
+
       {/* Sidebar */}
-      <motion.aside initial={false} animate={{ width: isCollapsed ? 90 : 280 }} style={{ background: 'rgba(1, 10, 15, 0.7)', backdropFilter: 'blur(30px)', borderInlineEnd: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-        <button onClick={() => setIsCollapsed(!isCollapsed)} style={{ position: 'absolute', [loc === 'ar' ? 'left' : 'right']: 12, top: 24, width: 32, height: 32, borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--elec-blue)', cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
-          {isCollapsed ? (loc === 'ar' ? '◀' : '▶') : (loc === 'ar' ? '▶' : '◀')}
-        </button>
-        <div style={{ padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', minHeight: 120 }}>
+      <motion.aside initial={false} animate={{ width: isMobile ? (isCollapsed ? 0 : 280) : (isCollapsed ? 90 : 280) }} style={{ background: 'rgba(1, 10, 15, 0.95)', backdropFilter: 'blur(30px)', borderInlineEnd: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', position: isMobile ? 'fixed' : 'relative', top: 0, bottom: 0, zIndex: 100, overflow: 'hidden', [loc === 'ar' ? 'right' : 'left']: 0 }}>
+        {!isMobile && (
+          <button onClick={() => setIsCollapsed(!isCollapsed)} style={{ position: 'absolute', [loc === 'ar' ? 'left' : 'right']: 12, top: 24, width: 32, height: 32, borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--elec-blue)', cursor: 'pointer', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
+            {isCollapsed ? (loc === 'ar' ? '◀' : '▶') : (loc === 'ar' ? '▶' : '◀')}
+          </button>
+        )}
+        <div style={{ padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: isCollapsed && !isMobile ? 'center' : 'flex-start', minHeight: 120 }}>
           <AnimatePresence mode="wait">
-            {isCollapsed ? (
+            {isCollapsed && !isMobile ? (
               <motion.img key="icon" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} src="/assets/admin/logo-icon.png" style={{ width: 45, height: 'auto', filter: 'drop-shadow(0 0 10px var(--elec-blue-glow))' }} />
             ) : (
               <motion.img key="full" initial={{ opacity: 0, x: loc === 'ar' ? 20 : -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: loc === 'ar' ? 20 : -20 }} src="/assets/admin/logo-full.png" style={{ height: 40, width: 'auto', maxWidth: '80%' }} />
@@ -158,17 +180,17 @@ export default function AdminLayout({
             if (item.restricted && !item.restricted.includes(userRole || '')) return null;
             const isActive = pathname.includes(item.id);
             return (
-              <Link key={item.href} href={item.href} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', gap: 16, padding: '14px 16px', borderRadius: 14, textDecoration: 'none', color: isActive ? 'white' : 'rgba(255,255,255,0.4)', fontWeight: isActive ? 700 : 500, transition: 'all 0.3s', whiteSpace: 'nowrap', border: '1px solid transparent' }} className={`admin-nav-item ${isActive ? 'active' : ''}`}>
+              <Link key={item.href} href={item.href} onClick={() => isMobile && setIsCollapsed(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed && !isMobile ? 'center' : 'flex-start', gap: 16, padding: '14px 16px', borderRadius: 14, textDecoration: 'none', color: isActive ? 'white' : 'rgba(255,255,255,0.4)', fontWeight: isActive ? 700 : 500, transition: 'all 0.3s', whiteSpace: 'nowrap', border: '1px solid transparent' }} className={`admin-nav-item ${isActive ? 'active' : ''}`}>
                 <span style={{ fontSize: 22, color: isActive ? 'var(--elec-blue)' : 'inherit' }}>{item.icon}</span>
-                {!isCollapsed && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{item.label}</motion.span>}
+                {(!isCollapsed || isMobile) && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{item.label}</motion.span>}
               </Link>
             );
           })}
         </nav>
         <div style={{ padding: 20, background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, justifyContent: isCollapsed && !isMobile ? 'center' : 'flex-start' }}>
             <div style={{ width: 44, height: 44, borderRadius: 14, background: 'linear-gradient(135deg, var(--elec-blue), #007AFF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 18, flexShrink: 0, boxShadow: '0 0 15px var(--elec-blue-glow)' }}>{userName?.[0]?.toUpperCase() || 'A'}</div>
-            {!isCollapsed && (
+            {(!isCollapsed || isMobile) && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: 'white' }}>{userName}</div>
                 <div style={{ fontSize: 11, color: 'var(--elec-blue)', fontWeight: 600 }}>{userRole?.toUpperCase()}</div>
@@ -179,16 +201,23 @@ export default function AdminLayout({
       </motion.aside>
 
       {/* Main Content */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <header style={{ height: 90, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', background: 'rgba(2, 8, 12, 0.8)', backdropFilter: 'blur(30px)', zIndex: 90 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 40, flex: 1 }}>
-            <div style={{ fontSize: 22, fontWeight: 900, minWidth: 180, color: 'white', letterSpacing: -0.5 }}>
-              {pathname.includes('dashboard') ? t.admin?.dashboard || 'Dashboard' :
-                pathname.includes('requests') ? t.admin?.requests || 'Requests' :
-                  pathname.includes('shipments') ? t.admin?.shipments || 'Shipments' :
-                    pathname.includes('settings') ? (loc === 'ar' ? 'الإعدادات' : 'Settings') :
-                      pathname.includes('users') ? (loc === 'ar' ? 'الموظفين' : 'Users') : 'Console'}
-            </div>
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', width: '100%' }}>
+        <header style={{ height: isMobile ? 70 : 90, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 16px' : '0 40px', background: 'rgba(2, 8, 12, 0.8)', backdropFilter: 'blur(30px)', zIndex: 90 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 40, flex: 1 }}>
+            {isMobile && (
+              <button onClick={() => setIsCollapsed(false)} style={{ background: 'none', border: 'none', color: 'white', fontSize: 24, cursor: 'pointer', padding: '4px' }}>
+                ☰
+              </button>
+            )}
+            {!isMobile && (
+              <div style={{ fontSize: 22, fontWeight: 900, minWidth: 180, color: 'white', letterSpacing: -0.5 }}>
+                {pathname.includes('dashboard') ? t.admin?.dashboard || 'Dashboard' :
+                  pathname.includes('requests') ? t.admin?.requests || 'Requests' :
+                    pathname.includes('shipments') ? t.admin?.shipments || 'Shipments' :
+                      pathname.includes('settings') ? (loc === 'ar' ? 'الإعدادات' : 'Settings') :
+                        pathname.includes('users') ? (loc === 'ar' ? 'الموظفين' : 'Users') : 'Console'}
+              </div>
+            )}
             <div style={{ position: 'relative', width: '100%', maxWidth: 500 }}>
               <div style={{ position: 'absolute', [loc === 'ar' ? 'right' : 'left']: 20, top: '50%', transform: 'translateY(-50%)', opacity: 0.4, fontSize: 18, color: 'var(--elec-blue)' }}>🔍</div>
               <input type="text" value={searchQuery} onChange={(e) => handleSearch(e.target.value)} placeholder={loc === 'ar' ? 'ابحث هنا...' : 'Global Search...'} style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: loc === 'ar' ? '14px 54px 14px 14px' : '14px 14px 14px 54px', color: 'white', fontSize: 14, outline: 'none', transition: 'all 0.4s' }} />
@@ -225,9 +254,9 @@ export default function AdminLayout({
             </div>
 
             <div style={{ position: 'relative' }}>
-              <button onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }} style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'rgba(0, 240, 255, 0.05)', padding: '8px 20px 8px 8px', borderRadius: 100, border: '1px solid var(--elec-blue-glow)', cursor: 'pointer' }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--elec-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, color: '#000', fontSize: 14 }}>{userName?.[0]?.toUpperCase()}</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--elec-blue)' }}>{loc === 'ar' ? 'متصل' : 'Online'}</div>
+              <button onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }} style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 0 : 14, background: 'rgba(0, 240, 255, 0.05)', padding: isMobile ? '6px' : '8px 20px 8px 8px', borderRadius: 100, border: '1px solid var(--elec-blue-glow)', cursor: 'pointer' }}>
+                <div style={{ width: isMobile ? 32 : 36, height: isMobile ? 32 : 36, borderRadius: '50%', background: 'var(--elec-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, color: '#000', fontSize: 14 }}>{userName?.[0]?.toUpperCase()}</div>
+                {!isMobile && <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--elec-blue)' }}>{loc === 'ar' ? 'متصل' : 'Online'}</div>}
               </button>
               <AnimatePresence>
                 {showProfile && (
@@ -240,7 +269,7 @@ export default function AdminLayout({
             </div>
           </div>
         </header>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '48px', position: 'relative' }}>{children}</div>
+        <div style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '20px 16px' : '48px', position: 'relative' }}>{children}</div>
       </main>
     </div>
   );
