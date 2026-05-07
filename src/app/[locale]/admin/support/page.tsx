@@ -24,7 +24,7 @@ export default function AdminSupportPage({ params }: { params: Promise<{ locale:
         </p>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-          <a href="https://wa.me/966XXXXXXXXX" target="_blank" className="btn-whatsapp" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, textDecoration: 'none', borderRadius: 12, fontSize: 16 }}>
+          <a href="https://wa.me/967771161870" target="_blank" className="btn-whatsapp" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, textDecoration: 'none', borderRadius: 12, fontSize: 16 }}>
             <span>📞</span> {loc === 'ar' ? 'دعم الواتساب' : 'WhatsApp Support'}
           </a>
           <a href="mailto:support@smartship.com" className="btn-secondary" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, textDecoration: 'none', borderRadius: 12, fontSize: 16 }}>

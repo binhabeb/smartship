@@ -31,14 +31,14 @@ export default function ContactPage({ params }: { params: Promise<{ locale: stri
                   <div style={{ fontSize: 32 }}>📍</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700 }}>{isAr ? 'العنوان' : 'Address'}</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{isAr ? 'صنعاء، اليمن' : 'Sanaa, Yemen'}</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{isAr ? 'اليمن - عدن' : 'Yemen - Aden'}</div>
                   </div>
                 </div>
                 <div className="glass-card" style={{ padding: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ fontSize: 32 }}>📞</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700 }}>{isAr ? 'رقم الهاتف' : 'Phone Number'}</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: 14, direction: 'ltr' }}>+966 50 123 4567</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: 14, direction: 'ltr' }}>+86 193 8307 9080</div>
                   </div>
                 </div>
                 <div className="glass-card" style={{ padding: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -48,7 +48,7 @@ export default function ContactPage({ params }: { params: Promise<{ locale: stri
                     <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>info@smartship.com</div>
                   </div>
                 </div>
-                <a href="https://wa.me/966501234567" className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', padding: '16px', borderRadius: 'var(--radius-md)' }}>
+                <a href="https://wa.me/8619383079080" className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', padding: '16px', borderRadius: 'var(--radius-md)' }}>
                   💬 {isAr ? 'تواصل عبر واتساب' : 'Contact via WhatsApp'}
                 </a>
               </div>
