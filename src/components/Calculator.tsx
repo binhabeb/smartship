@@ -60,20 +60,60 @@ const dict = {
   }
 };
 
+// Extracted OUTSIDE the component to prevent re-mount on every keystroke
+function CalcInputRow({ label, value, onChange, suffix, readOnly = false, placeholder = '', isAr = false }: {
+  label: string; value: string; onChange: (v: string) => void; suffix: string;
+  readOnly?: boolean; placeholder?: string; isAr?: boolean;
+}) {
+  return (
+    <div className={cn("flex items-center justify-between gap-3 w-full", isAr ? "flex-row-reverse" : "flex-row")}>
+      <label className="text-[13px] text-[var(--text-secondary)] font-medium flex-1 leading-tight">
+        {label}
+      </label>
+      <div className="relative w-[120px] md:w-32 flex-shrink-0">
+        <input
+          type="text"
+          inputMode="decimal"
+          value={value}
+          placeholder={placeholder}
+          onChange={e => {
+            if (readOnly) return;
+            const v = e.target.value;
+            if (v === '' || /^[0-9]*\.?[0-9]*$/.test(v)) onChange(v);
+          }}
+          readOnly={readOnly}
+          dir="ltr"
+          className={cn(
+            "input-glass !py-2.5 !text-sm text-center font-semibold font-['Montserrat'] calc-input",
+            isAr ? "!pr-10 !pl-2" : "!pl-10 !pr-2",
+            readOnly && "opacity-60 cursor-not-allowed"
+          )}
+        />
+        <span className={cn(
+          "absolute top-1/2 -translate-y-1/2 text-[11px] font-bold text-[var(--text-tertiary)] font-['Montserrat'] pointer-events-none",
+          isAr ? "right-3" : "left-3"
+        )}>
+          {suffix}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen: boolean; onClose: () => void; locale?: string }) {
   const isAr = locale === 'ar';
   const t = dict[isAr ? 'ar' : 'en'];
-  
+
   const globalFixedCbmRate = useSettingsStore((state) => state.fixedCbmRate);
   const globalOfficeCommission = useSettingsStore((state) => state.officeCommission);
   const fetchSettings = useSettingsStore((state) => state.fetchSettings);
-  
+
   const [fixedCbmRate, setFixedCbmRate] = useState(globalFixedCbmRate.toString());
   const [officeCommission, setOfficeCommission] = useState(globalOfficeCommission.toString());
   const [unitPriceRMB, setUnitPriceRMB] = useState('');
   const [unitsPerCarton, setUnitsPerCarton] = useState('');
   const [cartonVolumeCBM, setCartonVolumeCBM] = useState('');
-  
+
   const [showRates, setShowRates] = useState(false);
   const [exRmb, setExRmb] = useState('7.24');
   const [exSar, setExSar] = useState('3.75');
@@ -124,7 +164,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
         useCORS: true,
       });
       invoiceRef.current.style.display = 'none';
-      
+
       const link = document.createElement('a');
       link.download = 'SmartShip-Quote.png';
       link.href = canvas.toDataURL();
@@ -132,40 +172,6 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
     }
   };
 
-  const InputRow = ({ label, value, onChange, suffix, readOnly = false, placeholder = '' }: any) => (
-    <div className={cn("flex items-center justify-between gap-3 w-full", isAr ? "flex-row-reverse" : "flex-row")}>
-      <label className="text-[13px] text-[var(--text-secondary)] font-medium flex-1 leading-tight">
-        {label}
-      </label>
-      <div className="relative w-[120px] md:w-32 flex-shrink-0">
-        <input
-          type="text"
-          inputMode="decimal"
-          pattern="[0-9]*[.]?[0-9]*"
-          value={value}
-          placeholder={placeholder}
-          onChange={e => {
-            if (readOnly) return;
-            const v = e.target.value;
-            if (v === '' || /^[0-9]*\.?[0-9]*$/.test(v)) onChange(v);
-          }}
-          readOnly={readOnly}
-          dir="ltr"
-          className={cn(
-            "input-glass !py-2.5 !text-sm text-center font-semibold font-['Montserrat'] calc-input",
-            isAr ? "!pr-10 !pl-2" : "!pl-10 !pr-2",
-            readOnly && "opacity-60 cursor-not-allowed"
-          )}
-        />
-        <span className={cn(
-          "absolute top-1/2 -translate-y-1/2 text-[11px] font-bold text-[var(--text-tertiary)] font-['Montserrat'] pointer-events-none",
-          isAr ? "right-3" : "left-3"
-        )}>
-          {suffix}
-        </span>
-      </div>
-    </div>
-  );
 
   return (
     <AnimatePresence>
@@ -187,7 +193,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className={cn(
-              "fixed bottom-0 left-0 right-0 h-[88vh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
+              "fixed bottom-0 left-0 right-0 h-[92vh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
               "glass-panel border-t md:border-l md:border-t-0 shadow-2xl flex flex-col",
               "rounded-t-3xl md:rounded-none overflow-hidden font-sans"
             )}
@@ -195,7 +201,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             style={{ background: 'var(--bg-surface)' }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[var(--glass-border)] shrink-0 bg-[var(--glass-bg)]">
+            <div className="flex items-center justify-between px-4 py-3 md:p-5 border-b border-[var(--glass-border)] shrink-0 bg-[var(--glass-bg)]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] glow-primary">
                   <CalcIcon size={20} />
@@ -216,12 +222,12 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             </div>
 
             {/* Hide number spinners globally */}
-            <style dangerouslySetInnerHTML={{__html: `.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}.calc-input[type=number]{-moz-appearance:textfield;}.calc-input::placeholder{color:var(--text-tertiary);opacity:0.5;font-weight:400;}`}} />
+            <style dangerouslySetInnerHTML={{ __html: `.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}.calc-input[type=number]{-moz-appearance:textfield;}.calc-input::placeholder{color:var(--text-tertiary);opacity:0.5;font-weight:400;}` }} />
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-5 pb-52 md:pb-6 custom-scrollbar relative">
-              <div className="space-y-4 max-w-full">
-                
+            <div className="flex-1 overflow-y-auto p-3 md:p-5 pb-44 md:pb-6 custom-scrollbar relative">
+              <div className="space-y-3 max-w-full">
+
                 {/* Section 1: Shipping & Commission */}
                 <div className="glass-card !p-4">
                   <div className="flex items-center justify-between mb-4 border-b border-[var(--glass-border)] pb-3">
@@ -233,15 +239,15 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                       <RotateCcw size={12} /> {t.reset}
                     </button>
                   </div>
-                  
+
                   <div className="space-y-3">
-                    <InputRow label={t.cbmRate} value={fixedCbmRate} onChange={setFixedCbmRate} suffix="USD" readOnly />
-                    <InputRow label={t.commission} value={officeCommission} onChange={setOfficeCommission} suffix="%" readOnly />
+                    <CalcInputRow label={t.cbmRate} value={fixedCbmRate} onChange={setFixedCbmRate} suffix="USD" readOnly isAr={isAr} />
+                    <CalcInputRow label={t.commission} value={officeCommission} onChange={setOfficeCommission} suffix="%" readOnly isAr={isAr} />
                   </div>
 
                   {/* Accordion for Rates */}
                   <div className="mt-4 pt-3 border-t border-[var(--glass-border)]/50">
-                    <button 
+                    <button
                       onClick={() => setShowRates(!showRates)}
                       className="w-full flex items-center justify-between text-[11px] text-[var(--text-secondary)] hover:text-white transition-colors py-1"
                     >
@@ -257,8 +263,8 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                           className="overflow-hidden"
                         >
                           <div className="pt-3 space-y-3">
-                            <InputRow label={t.usdRmb} value={exRmb} onChange={setExRmb} suffix="RMB" />
-                            <InputRow label={t.usdSar} value={exSar} onChange={setExSar} suffix="SAR" />
+                            <CalcInputRow label={t.usdRmb} value={exRmb} onChange={setExRmb} suffix="RMB" isAr={isAr} />
+                            <CalcInputRow label={t.usdSar} value={exSar} onChange={setExSar} suffix="SAR" isAr={isAr} />
                           </div>
                         </motion.div>
                       )}
@@ -272,11 +278,11 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                     <Box size={18} />
                     <h3 className="text-sm font-bold text-white">{t.productDetails}</h3>
                   </div>
-                  
+
                   <div className="space-y-3">
-                    <InputRow label={t.unitPrice} value={unitPriceRMB} onChange={setUnitPriceRMB} suffix="RMB" placeholder="0.00" />
-                    <InputRow label={t.unitsPerCarton} value={unitsPerCarton} onChange={setUnitsPerCarton} suffix="PCS" placeholder="0" />
-                    <InputRow label={t.cartonVolume} value={cartonVolumeCBM} onChange={setCartonVolumeCBM} suffix="CBM" placeholder="0.000" />
+                    <CalcInputRow label={t.unitPrice} value={unitPriceRMB} onChange={setUnitPriceRMB} suffix="RMB" placeholder="0.00" isAr={isAr} />
+                    <CalcInputRow label={t.unitsPerCarton} value={unitsPerCarton} onChange={setUnitsPerCarton} suffix="PCS" placeholder="0" isAr={isAr} />
+                    <CalcInputRow label={t.cartonVolume} value={cartonVolumeCBM} onChange={setCartonVolumeCBM} suffix="CBM" placeholder="0.000" isAr={isAr} />
                   </div>
                 </div>
 
@@ -284,11 +290,11 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                 <div className="hidden md:block glass-card !p-5 relative overflow-hidden glow-primary">
                   {/* Subtle background glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/10 to-transparent pointer-events-none" />
-                  
+
                   <div className="text-center mb-5 relative z-10">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="text-[11px] text-[var(--text-secondary)] font-medium">{t.finalCost}</h4>
-                      <button 
+                      <button
                         onClick={handleDownload}
                         className="flex items-center gap-1.5 text-[10px] bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 text-[var(--primary-light)] px-2.5 py-1 rounded-full transition-all border border-[var(--primary)]/20"
                       >
@@ -335,7 +341,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             {/* Sticky Mobile Result Card */}
             <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 p-3 pb-4 bg-gradient-to-t from-[var(--bg-deep)] via-[var(--bg-surface)]/95 to-transparent pointer-events-none">
               <div className="glass-card !p-3.5 pointer-events-auto shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 backdrop-blur-[30px] bg-[var(--bg-card)]/95">
-                <div 
+                <div
                   className="flex flex-col cursor-pointer"
                   onClick={() => setShowBreakdown(!showBreakdown)}
                 >
@@ -398,13 +404,13 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
 
           {/* Hidden Invoice Template for Export */}
           <div style={{ overflow: 'hidden', height: 0, width: 0 }}>
-            <div 
-              ref={invoiceRef} 
-              style={{ 
-                width: '800px', 
-                background: '#051024', 
-                color: '#fff', 
-                padding: '40px', 
+            <div
+              ref={invoiceRef}
+              style={{
+                width: '800px',
+                background: '#051024',
+                color: '#fff',
+                padding: '40px',
                 fontFamily: isAr ? "'Tajawal', sans-serif" : "'Montserrat', sans-serif",
                 display: 'none',
                 direction: isAr ? 'rtl' : 'ltr'
