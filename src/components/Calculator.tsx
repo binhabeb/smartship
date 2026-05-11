@@ -132,27 +132,33 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
     }
   };
 
-  const InputRow = ({ label, value, onChange, suffix, type = "number", readOnly = false }: any) => (
-    <div className={cn("flex items-center justify-between gap-4 w-full", isAr ? "flex-row-reverse" : "flex-row")}>
-      <label className="text-[13px] text-[var(--text-secondary)] font-medium flex-1">
+  const InputRow = ({ label, value, onChange, suffix, readOnly = false, placeholder = '' }: any) => (
+    <div className={cn("flex items-center justify-between gap-3 w-full", isAr ? "flex-row-reverse" : "flex-row")}>
+      <label className="text-[13px] text-[var(--text-secondary)] font-medium flex-1 leading-tight">
         {label}
       </label>
-      <div className="relative w-28 md:w-32 flex-shrink-0">
+      <div className="relative w-[120px] md:w-32 flex-shrink-0">
         <input
-          type={type}
+          type="text"
           inputMode="decimal"
+          pattern="[0-9]*[.]?[0-9]*"
           value={value}
-          onChange={e => !readOnly && onChange(e.target.value)}
+          placeholder={placeholder}
+          onChange={e => {
+            if (readOnly) return;
+            const v = e.target.value;
+            if (v === '' || /^[0-9]*\.?[0-9]*$/.test(v)) onChange(v);
+          }}
           readOnly={readOnly}
           dir="ltr"
           className={cn(
-            "input-glass !py-2 !text-sm text-center font-semibold font-['Montserrat']",
+            "input-glass !py-2.5 !text-sm text-center font-semibold font-['Montserrat'] calc-input",
             isAr ? "!pr-10 !pl-2" : "!pl-10 !pr-2",
-            readOnly && "opacity-70 cursor-not-allowed bg-[var(--glass-hover)]"
+            readOnly && "opacity-60 cursor-not-allowed"
           )}
         />
         <span className={cn(
-          "absolute top-1/2 -translate-y-1/2 text-[11px] font-bold text-[var(--text-tertiary)] font-['Montserrat']",
+          "absolute top-1/2 -translate-y-1/2 text-[11px] font-bold text-[var(--text-tertiary)] font-['Montserrat'] pointer-events-none",
           isAr ? "right-3" : "left-3"
         )}>
           {suffix}
@@ -209,8 +215,11 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
               </button>
             </div>
 
+            {/* Hide number spinners globally */}
+            <style dangerouslySetInnerHTML={{__html: `.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}.calc-input[type=number]{-moz-appearance:textfield;}.calc-input::placeholder{color:var(--text-tertiary);opacity:0.5;font-weight:400;}`}} />
+
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-40 custom-scrollbar relative">
+            <div className="flex-1 overflow-y-auto p-4 md:p-5 pb-52 md:pb-6 custom-scrollbar relative">
               <div className="space-y-4 max-w-full">
                 
                 {/* Section 1: Shipping & Commission */}
@@ -265,9 +274,9 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                   </div>
                   
                   <div className="space-y-3">
-                    <InputRow label={t.unitPrice} value={unitPriceRMB} onChange={setUnitPriceRMB} suffix="RMB" />
-                    <InputRow label={t.unitsPerCarton} value={unitsPerCarton} onChange={setUnitsPerCarton} suffix="PCS" />
-                    <InputRow label={t.cartonVolume} value={cartonVolumeCBM} onChange={setCartonVolumeCBM} suffix="CBM" />
+                    <InputRow label={t.unitPrice} value={unitPriceRMB} onChange={setUnitPriceRMB} suffix="RMB" placeholder="0.00" />
+                    <InputRow label={t.unitsPerCarton} value={unitsPerCarton} onChange={setUnitsPerCarton} suffix="PCS" placeholder="0" />
+                    <InputRow label={t.cartonVolume} value={cartonVolumeCBM} onChange={setCartonVolumeCBM} suffix="CBM" placeholder="0.000" />
                   </div>
                 </div>
 
@@ -324,8 +333,8 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             </div>
 
             {/* Sticky Mobile Result Card */}
-            <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 p-4 pb-6 bg-gradient-to-t from-[var(--bg-deep)] via-[var(--bg-surface)] to-transparent pointer-events-none">
-              <div className="glass-card !p-4 pointer-events-auto shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 backdrop-blur-[30px] bg-[var(--bg-card)]/90">
+            <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 p-3 pb-4 bg-gradient-to-t from-[var(--bg-deep)] via-[var(--bg-surface)]/95 to-transparent pointer-events-none">
+              <div className="glass-card !p-3.5 pointer-events-auto shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 backdrop-blur-[30px] bg-[var(--bg-card)]/95">
                 <div 
                   className="flex flex-col cursor-pointer"
                   onClick={() => setShowBreakdown(!showBreakdown)}
