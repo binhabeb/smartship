@@ -134,6 +134,7 @@ export default function AdminLayout({
     { href: `/${locale}/admin/users`, label: loc === 'ar' ? 'إدارة الموظفين' : 'Users & Roles', icon: '👥', id: 'users', restricted: ['admin'] },
     { href: `/${locale}/admin/settings`, label: loc === 'ar' ? 'الإعدادات' : 'Settings', icon: '⚙️', id: 'settings', restricted: ['admin', 'manager'] },
     { href: `/${locale}/admin/support`, label: loc === 'ar' ? 'الدعم الفني' : 'Support', icon: '🎧', id: 'support' },
+    { href: `/${locale}`, label: loc === 'ar' ? 'العودة للموقع' : 'Back to Site', icon: '🏠', id: 'back-to-site' },
   ];
 
   return (
@@ -238,7 +239,17 @@ export default function AdminLayout({
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 24 }}>
+            {!isMobile && (
+              <Link href={`/${locale}`} style={{ 
+                display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,0.4)', 
+                textDecoration: 'none', fontSize: 13, fontWeight: 600, padding: '8px 16px',
+                borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)',
+                transition: 'all 0.3s'
+              }} className="admin-nav-item">
+                🏠 {loc === 'ar' ? 'الرئيسية' : 'Home'}
+              </Link>
+            )}
             <div style={{ position: 'relative' }}>
               <button onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', width: 48, height: 48, borderRadius: 14, cursor: 'pointer', fontSize: 22, position: 'relative', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 🔔 {notifications.length > 0 && (<span style={{ position: 'absolute', top: -4, right: -4, background: '#FF3B30', color: 'white', fontSize: 10, width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, border: '4px solid #05070A' }}>{notifications.length}</span>)}

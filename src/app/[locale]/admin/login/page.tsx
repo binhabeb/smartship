@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getTranslations, Locale } from '@/lib/translations';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 export default function AdminLogin({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
@@ -56,8 +57,19 @@ export default function AdminLogin({ params }: { params: Promise<{ locale: strin
     }
   };
 
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, background: 'radial-gradient(ellipse at 50% 30%, rgba(0,122,255,0.08) 0%, transparent 60%), var(--bg-deep)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20, background: 'radial-gradient(ellipse at 50% 30%, rgba(0,122,255,0.08) 0%, transparent 60%), var(--bg-deep)' }}>
+      {/* Back to Home Button */}
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} style={{ position: 'absolute', top: 24, [loc === 'ar' ? 'right' : 'left']: 24, zIndex: 10 }}>
+        <Link href={`/${locale}`} style={{ 
+          display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', 
+          textDecoration: 'none', fontSize: 14, fontWeight: 600, padding: '10px 16px',
+          borderRadius: 12, background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+          backdropFilter: 'var(--blur-glass)', transition: 'all 0.3s'
+        }} className="back-home-btn">
+          <span>{loc === 'ar' ? '🏠 العودة للرئيسية' : '🏠 Back to Home'}</span>
+        </Link>
+      </motion.div>
+
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="glass-card" style={{ padding: 40, maxWidth: 420, width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #0055CC)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, margin: '0 auto 16px' }}>🚢</div>
