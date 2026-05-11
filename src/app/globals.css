@@ -676,3 +676,18 @@ main, .glass-card, [style*="overflow"] {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Calculator Inputs */
+.calc-input::-webkit-outer-spin-button,
+.calc-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.calc-input[type=number], .calc-input {
+  -moz-appearance: textfield;
+}
+.calc-input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  font-weight: 400;
+}

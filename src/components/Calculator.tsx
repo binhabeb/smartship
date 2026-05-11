@@ -193,7 +193,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className={cn(
-              "fixed bottom-0 left-0 right-0 h-[92vh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
+              "fixed bottom-0 left-0 right-0 h-auto max-h-[92vh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
               "glass-panel border-t md:border-l md:border-t-0 shadow-2xl flex flex-col",
               "rounded-t-3xl md:rounded-none overflow-hidden font-sans"
             )}
@@ -221,11 +221,8 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
               </button>
             </div>
 
-            {/* Hide number spinners globally */}
-            <style dangerouslySetInnerHTML={{ __html: `.calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}.calc-input[type=number]{-moz-appearance:textfield;}.calc-input::placeholder{color:var(--text-tertiary);opacity:0.5;font-weight:400;}` }} />
-
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-3 md:p-5 pb-44 md:pb-6 custom-scrollbar relative">
+            <div className="flex-1 min-h-0 overflow-y-auto p-3 md:p-5 pb-6 custom-scrollbar relative">
               <div className="space-y-3 max-w-full">
 
                 {/* Section 1: Shipping & Commission */}
@@ -339,8 +336,8 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             </div>
 
             {/* Sticky Mobile Result Card */}
-            <div className="md:hidden absolute bottom-0 left-0 right-0 z-50 p-3 pb-4 bg-gradient-to-t from-[var(--bg-deep)] via-[var(--bg-surface)]/95 to-transparent pointer-events-none">
-              <div className="glass-card !p-3.5 pointer-events-auto shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 backdrop-blur-[30px] bg-[var(--bg-card)]/95">
+            <div className="md:hidden z-50 shrink-0 p-3 bg-[var(--bg-card)] border-t border-[var(--glass-border)]">
+              <div className="glass-card !p-3.5 shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 bg-[var(--bg-surface)]">
                 <div
                   className="flex flex-col cursor-pointer"
                   onClick={() => setShowBreakdown(!showBreakdown)}
