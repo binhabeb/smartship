@@ -119,7 +119,7 @@ export default function Header({ locale }: { locale: Locale }) {
         )}
       </AnimatePresence>
 
-      <Calculator isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
+      <Calculator locale={locale} isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
     </header>
   );
 }

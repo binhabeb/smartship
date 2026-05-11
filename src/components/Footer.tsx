@@ -70,7 +70,7 @@ export default function Footer({ locale }: { locale: Locale }) {
         <span style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>{t.footer.copyright}</span>
         <span style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>{t.footer.designedWith}</span>
       </div>
-      <Calculator isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
+      <Calculator locale={locale} isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
     </footer>
   );
 }
