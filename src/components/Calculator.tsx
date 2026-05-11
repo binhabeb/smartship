@@ -471,7 +471,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
               <div style={{ marginTop: '60px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>
                 <p style={{ marginBottom: '8px', color: '#0066FF', fontWeight: 600 }}>{isAr ? 'شكراً لاختياركم سمارت شيب' : 'Thank you for choosing SmartShip'}</p>
                 <p style={{ marginBottom: '4px' }}>{isAr ? 'هذا العرض تقريبي وقابل للتغيير الطفيف بناءً على القياسات الفعلية وأسعار الصرف اليومية.' : 'This is an estimate quote and subject to minor changes based on actual measurements and daily exchange rates.'}</p>
-                <p style={{ marginTop: '12px', opacity: 0.8 }}>www.smartship.com</p>
+                <p style={{ marginTop: '12px', opacity: 0.8 }}>www.binhabeb.com</p>
               </div>
             </div>
           </div>
