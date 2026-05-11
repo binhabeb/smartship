@@ -250,6 +250,7 @@ export const translations = {
       yes: 'نعم',
       no: 'لا',
       SAR: 'ريال',
+      calculator: 'حاسبة الشحن',
     },
   },
   en: {
@@ -496,6 +497,7 @@ export const translations = {
       yes: 'Yes',
       no: 'No',
       SAR: 'SAR',
+      calculator: 'Calculator',
     },
   },
 };
