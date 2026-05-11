@@ -79,7 +79,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
   const [exSar, setExSar] = useState('3.75');
 
   const [showBreakdown, setShowBreakdown] = useState(true);
-  const quoteRef = useRef<HTMLDivElement>(null);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -115,11 +115,16 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
   const finalTotalUSD = finalTotalRMB / rateRMB;
 
   const handleDownload = async () => {
-    if (quoteRef.current) {
-      const canvas = await html2canvas(quoteRef.current, {
+    if (invoiceRef.current) {
+      // Temporarily show for canvas
+      invoiceRef.current.style.display = 'block';
+      const canvas = await html2canvas(invoiceRef.current, {
         backgroundColor: '#051024',
         scale: 2,
+        useCORS: true,
       });
+      invoiceRef.current.style.display = 'none';
+      
       const link = document.createElement('a');
       link.download = 'SmartShip-Quote.png';
       link.href = canvas.toDataURL();
@@ -206,7 +211,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-40 custom-scrollbar relative">
-              <div ref={quoteRef} className="space-y-4 max-w-full">
+              <div className="space-y-4 max-w-full">
                 
                 {/* Section 1: Shipping & Commission */}
                 <div className="glass-card !p-4">
@@ -272,7 +277,16 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/10 to-transparent pointer-events-none" />
                   
                   <div className="text-center mb-5 relative z-10">
-                    <h4 className="text-[11px] text-[var(--text-secondary)] mb-2 font-medium">{t.finalCost}</h4>
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="text-[11px] text-[var(--text-secondary)] font-medium">{t.finalCost}</h4>
+                      <button 
+                        onClick={handleDownload}
+                        className="flex items-center gap-1.5 text-[10px] bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 text-[var(--primary-light)] px-2.5 py-1 rounded-full transition-all border border-[var(--primary)]/20"
+                      >
+                        <Download size={12} />
+                        {t.export}
+                      </button>
+                    </div>
                     <div className="flex items-center justify-center gap-2 font-bold mb-3">
                       <span className="text-[40px] text-white font-['Montserrat'] leading-none">
                         <span className="text-[20px] text-[var(--text-tertiary)] mr-1">¥</span>
@@ -372,6 +386,95 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             </div>
 
           </motion.div>
+
+          {/* Hidden Invoice Template for Export */}
+          <div style={{ overflow: 'hidden', height: 0, width: 0 }}>
+            <div 
+              ref={invoiceRef} 
+              style={{ 
+                width: '800px', 
+                background: '#051024', 
+                color: '#fff', 
+                padding: '40px', 
+                fontFamily: isAr ? "'Tajawal', sans-serif" : "'Montserrat', sans-serif",
+                display: 'none',
+                direction: isAr ? 'rtl' : 'ltr'
+              }}
+            >
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid rgba(255,255,255,0.1)', paddingBottom: '24px', marginBottom: '32px' }}>
+                <div>
+                  <div style={{ fontSize: '28px', fontWeight: 900, color: '#0066FF' }}>SmartShip</div>
+                  <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', marginTop: '4px' }}>
+                    {isAr ? 'مؤسسة بن حبيب للتجارة والاستيراد' : 'Bin Habib Trading & Import'}
+                  </div>
+                </div>
+                <div style={{ textAlign: isAr ? 'left' : 'right' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: 800, margin: 0 }}>{isAr ? 'عرض سعر مبدئي' : 'ESTIMATE QUOTE'}</h2>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginTop: '8px' }}>
+                    {new Date().toLocaleDateString(isAr ? 'ar-SA' : 'en-US')}
+                  </div>
+                </div>
+              </div>
+
+              {/* Items */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '32px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)', textAlign: isAr ? 'right' : 'left' }}>
+                    <th style={{ padding: '12px 8px', color: 'rgba(255,255,255,0.5)' }}>{t.productDetails}</th>
+                    <th style={{ padding: '12px 8px', color: 'rgba(255,255,255,0.5)' }}>{isAr ? 'التفاصيل' : 'Details'}</th>
+                    <th style={{ padding: '12px 8px', color: 'rgba(255,255,255,0.5)', textAlign: isAr ? 'left' : 'right' }}>{isAr ? 'القيمة' : 'Amount'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: '16px 8px', fontWeight: 600 }}>{isAr ? 'تكلفة المنتج' : 'Product Cost'}</td>
+                    <td style={{ padding: '16px 8px', color: 'rgba(255,255,255,0.7)' }}>{units} {isAr ? 'قطعة' : 'pcs'} × ¥{priceRMB.toFixed(2)}</td>
+                    <td style={{ padding: '16px 8px', textAlign: isAr ? 'left' : 'right', fontWeight: 600 }}>¥{(priceRMB * units).toFixed(2)}</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: '16px 8px', fontWeight: 600 }}>{t.commission}</td>
+                    <td style={{ padding: '16px 8px', color: 'rgba(255,255,255,0.7)' }}>{commission}%</td>
+                    <td style={{ padding: '16px 8px', textAlign: isAr ? 'left' : 'right', fontWeight: 600 }}>¥{(commAmountRMB * units).toFixed(2)}</td>
+                  </tr>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: '16px 8px', fontWeight: 600 }}>{isAr ? 'تكلفة الشحن' : 'Shipping Cost'}</td>
+                    <td style={{ padding: '16px 8px', color: 'rgba(255,255,255,0.7)' }}>{volumeCBM} CBM × ${cbmRate}</td>
+                    <td style={{ padding: '16px 8px', textAlign: isAr ? 'left' : 'right', fontWeight: 600 }}>¥{(shippingCartonUSD * rateRMB).toFixed(2)}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Summary */}
+              <div style={{ display: 'flex', justifyContent: isAr ? 'flex-start' : 'flex-end' }}>
+                <div style={{ width: '350px', background: 'rgba(0,102,255,0.05)', borderRadius: '12px', padding: '24px', border: '1px solid rgba(0,102,255,0.1)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>{isAr ? 'الإجمالي (يوان)' : 'Total (RMB)'}</span>
+                    <span style={{ fontWeight: 700 }}>¥{(finalTotalRMB * units).toFixed(2)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>{isAr ? 'الإجمالي (دولار)' : 'Total (USD)'}</span>
+                    <span style={{ fontWeight: 700 }}>${(finalTotalUSD * units).toFixed(2)}</span>
+                  </div>
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', margin: '16px 0' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 800 }}>{isAr ? 'الإجمالي (ريال)' : 'Total (SAR)'}</span>
+                    <span style={{ fontSize: '24px', fontWeight: 900, color: '#0066FF' }}>SAR {(finalTotalSAR * units).toFixed(2)}</span>
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
+                    {isAr ? 'التكلفة للقطعة الواحدة:' : 'Cost per Unit:'} ¥{finalTotalRMB.toFixed(2)} | SAR {finalTotalSAR.toFixed(2)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div style={{ marginTop: '60px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>
+                <p style={{ marginBottom: '8px', color: '#0066FF', fontWeight: 600 }}>{isAr ? 'شكراً لاختياركم سمارت شيب' : 'Thank you for choosing SmartShip'}</p>
+                <p style={{ marginBottom: '4px' }}>{isAr ? 'هذا العرض تقريبي وقابل للتغيير الطفيف بناءً على القياسات الفعلية وأسعار الصرف اليومية.' : 'This is an estimate quote and subject to minor changes based on actual measurements and daily exchange rates.'}</p>
+                <p style={{ marginTop: '12px', opacity: 0.8 }}>www.smartship.com</p>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </AnimatePresence>
