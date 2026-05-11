@@ -15,6 +15,8 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
     contact_phone: '',
     contact_email: '',
     maintenance_mode: false,
+    fixed_cbm_rate: 150,
+    office_commission: 5,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -113,6 +115,20 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'البريد الإلكتروني للدعم' : 'Support Email'}</label>
               <input className="input-glass" type="email" value={settings.contact_email || ''} onChange={e => setSettings({...settings, contact_email: e.target.value})} dir="ltr" />
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card" style={{ padding: 32 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24 }}>{loc === 'ar' ? 'إعدادات حاسبة الشحن' : 'Shipping Calculator Settings'}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'سعر الشحن لكل متر مكعب (USD)' : 'CBM Rate (USD)'}</label>
+              <input className="input-glass" type="number" value={settings.fixed_cbm_rate ?? 150} onChange={e => setSettings({...settings, fixed_cbm_rate: parseFloat(e.target.value) || 0})} dir="ltr" />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'نسبة عمولة المكتب (%)' : 'Office Commission (%)'}</label>
+              <input className="input-glass" type="number" value={settings.office_commission ?? 5} onChange={e => setSettings({...settings, office_commission: parseFloat(e.target.value) || 0})} dir="ltr" />
             </div>
           </div>
         </div>

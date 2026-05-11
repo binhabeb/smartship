@@ -65,9 +65,11 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
   const t = dict[isAr ? 'ar' : 'en'];
   
   const globalFixedCbmRate = useSettingsStore((state) => state.fixedCbmRate);
+  const globalOfficeCommission = useSettingsStore((state) => state.officeCommission);
+  const fetchSettings = useSettingsStore((state) => state.fetchSettings);
   
   const [fixedCbmRate, setFixedCbmRate] = useState(globalFixedCbmRate.toString());
-  const [officeCommission, setOfficeCommission] = useState('5');
+  const [officeCommission, setOfficeCommission] = useState(globalOfficeCommission.toString());
   const [unitPriceRMB, setUnitPriceRMB] = useState('');
   const [unitsPerCarton, setUnitsPerCarton] = useState('');
   const [cartonVolumeCBM, setCartonVolumeCBM] = useState('');
@@ -80,14 +82,20 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
   const quoteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  useEffect(() => {
     setFixedCbmRate(globalFixedCbmRate.toString());
-  }, [globalFixedCbmRate]);
+    setOfficeCommission(globalOfficeCommission.toString());
+  }, [globalFixedCbmRate, globalOfficeCommission]);
 
   const handleReset = () => {
-    setFixedCbmRate(globalFixedCbmRate.toString());
-    setOfficeCommission('5');
     setExRmb('7.24');
     setExSar('3.75');
+    setUnitPriceRMB('');
+    setUnitsPerCarton('');
+    setCartonVolumeCBM('');
   };
 
   const priceRMB = parseFloat(unitPriceRMB) || 0;
@@ -119,7 +127,7 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
     }
   };
 
-  const InputRow = ({ label, value, onChange, suffix, type = "number" }: any) => (
+  const InputRow = ({ label, value, onChange, suffix, type = "number", readOnly = false }: any) => (
     <div className={cn("flex items-center justify-between gap-4 w-full", isAr ? "flex-row-reverse" : "flex-row")}>
       <label className="text-[13px] text-[var(--text-secondary)] font-medium flex-1">
         {label}
@@ -129,11 +137,13 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
           type={type}
           inputMode="decimal"
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => !readOnly && onChange(e.target.value)}
+          readOnly={readOnly}
           dir="ltr"
           className={cn(
             "input-glass !py-2 !text-sm text-center font-semibold font-['Montserrat']",
-            isAr ? "!pr-10 !pl-2" : "!pl-10 !pr-2"
+            isAr ? "!pr-10 !pl-2" : "!pl-10 !pr-2",
+            readOnly && "opacity-70 cursor-not-allowed bg-[var(--glass-hover)]"
           )}
         />
         <span className={cn(
@@ -211,8 +221,8 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                   </div>
                   
                   <div className="space-y-3">
-                    <InputRow label={t.cbmRate} value={fixedCbmRate} onChange={setFixedCbmRate} suffix="USD" />
-                    <InputRow label={t.commission} value={officeCommission} onChange={setOfficeCommission} suffix="%" />
+                    <InputRow label={t.cbmRate} value={fixedCbmRate} onChange={setFixedCbmRate} suffix="USD" readOnly />
+                    <InputRow label={t.commission} value={officeCommission} onChange={setOfficeCommission} suffix="%" readOnly />
                   </div>
 
                   {/* Accordion for Rates */}
