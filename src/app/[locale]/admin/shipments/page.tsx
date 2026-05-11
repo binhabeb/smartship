@@ -17,7 +17,7 @@ export default function AdminShipmentsPage({ params }: { params: Promise<{ local
   const [showAddForm, setShowAddForm] = useState(false);
   const [adding, setAdding] = useState(false);
   const [newShipment, setNewShipment] = useState({
-    customer_name: '', customer_phone: '', city: '', product: '', product_description: '', current_status: 'shipped'
+    customer_name: '', customer_phone: '', city: '', product: '', product_description: '', current_status: 'shipped', product_image: ''
   });
 
   const [showInvoicePrompt, setShowInvoicePrompt] = useState<{ id: string, name: string } | null>(null);
@@ -48,7 +48,7 @@ export default function AdminShipmentsPage({ params }: { params: Promise<{ local
       if (error) throw new Error(error.message || error.code || JSON.stringify(error));
       
       setShowAddForm(false);
-      setNewShipment({ customer_name: '', customer_phone: '', city: '', product: '', product_description: '', current_status: 'shipped' });
+      setNewShipment({ customer_name: '', customer_phone: '', city: '', product: '', product_description: '', current_status: 'shipped', product_image: '' });
       await fetchShipments();
       
       // Prompt for invoice
@@ -129,6 +129,22 @@ export default function AdminShipmentsPage({ params }: { params: Promise<{ local
                 <option value="in_transit">{loc === 'ar' ? 'في الطريق' : 'In Transit'}</option>
                 <option value="delivered">{loc === 'ar' ? 'تم التسليم' : 'Delivered'}</option>
               </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>{loc === 'ar' ? 'صورة الشحنة' : 'Shipment Image'}</label>
+              <label className="input-glass" style={{ display: 'block', cursor: 'pointer', textAlign: 'center', padding: '8px' }}>
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setNewShipment({...newShipment, product_image: reader.result as string});
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }} />
+                {newShipment.product_image ? (loc === 'ar' ? 'تم الرفع ✅' : 'Uploaded ✅') : (loc === 'ar' ? 'اختر صورة...' : 'Choose Image...')}
+              </label>
             </div>
             <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 8 }}>
               <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary" style={{ padding: '8px 24px' }}>{loc === 'ar' ? 'إلغاء' : 'Cancel'}</button>

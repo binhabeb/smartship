@@ -17,7 +17,7 @@ export default function RequestPage({ params }: { params: Promise<{ locale: stri
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', city: '', productName: '', productDesc: '', productNotes: '', productUrl: '' });
+  const [form, setForm] = useState({ name: '', phone: '', city: '', productName: '', productDesc: '', productNotes: '', productUrl: '', productImage: '' });
 
   const update = (key: string, val: string) => setForm(prev => ({ ...prev, [key]: val }));
 
@@ -33,6 +33,7 @@ export default function RequestPage({ params }: { params: Promise<{ locale: stri
           product_description: form.productDesc,
           product_notes: form.productNotes,
           product_url: form.productUrl,
+          product_image: form.productImage, // Adding base64 image data
           status: 'new',
         }
       ]);
@@ -146,12 +147,28 @@ export default function RequestPage({ params }: { params: Promise<{ locale: stri
                     {/* Upload Area */}
                     <div>
                       <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{t.request.productImage}</label>
-                      <div style={{ border: '2px dashed var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: 32, textAlign: 'center', cursor: 'pointer' }}>
-                        <div style={{ fontSize: 32, marginBottom: 8 }}>📁</div>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{t.request.uploadImage}</div>
-                        <div style={{ color: 'var(--text-tertiary)', fontSize: 12, margin: '8px 0' }}>{t.request.uploadOr}</div>
-                        <span className="btn-secondary" style={{ padding: '6px 16px', fontSize: 13 }}>{t.request.browseFiles}</span>
-                      </div>
+                      <label style={{ display: 'block', border: '2px dashed var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: 32, textAlign: 'center', cursor: 'pointer' }}>
+                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              update('productImage', reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }} />
+                        {form.productImage ? (
+                          <div style={{ color: 'var(--primary)', fontWeight: 600 }}>{loc === 'ar' ? 'تم إرفاق الصورة ✅' : 'Image attached ✅'}</div>
+                        ) : (
+                          <>
+                            <div style={{ fontSize: 32, marginBottom: 8 }}>📁</div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{t.request.uploadImage}</div>
+                            <div style={{ color: 'var(--text-tertiary)', fontSize: 12, margin: '8px 0' }}>{t.request.uploadOr}</div>
+                            <span className="btn-secondary" style={{ padding: '6px 16px', fontSize: 13 }}>{t.request.browseFiles}</span>
+                          </>
+                        )}
+                      </label>
                     </div>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, gap: 12 }}>

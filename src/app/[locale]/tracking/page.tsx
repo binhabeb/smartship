@@ -166,13 +166,21 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
                 {/* Shipment Photos */}
                 <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{t.tracking.shipmentPhotos}</h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-                    {[1, 2, 3].map(i => (
-                      <div key={i} style={{
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: 12 }}>
+                    {shipment.productImage ? (
+                      <div style={{
+                        aspectRatio: '1', borderRadius: 12, background: 'var(--bg-elevated)',
+                        overflow: 'hidden', position: 'relative'
+                      }}>
+                        <img src={shipment.productImage} alt="Shipment" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ) : (
+                      <div style={{
                         aspectRatio: '1', borderRadius: 12, background: 'var(--bg-elevated)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32,
+                        color: 'var(--text-tertiary)'
                       }}>📦</div>
-                    ))}
+                    )}
                   </div>
                 </div>
 

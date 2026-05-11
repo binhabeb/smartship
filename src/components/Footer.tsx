@@ -2,9 +2,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, Locale } from '@/lib/translations';
+import { useState } from 'react';
+import Calculator from '@/components/Calculator';
 
 export default function Footer({ locale }: { locale: Locale }) {
   const t = getTranslations(locale);
+  const [calcOpen, setCalcOpen] = useState(false);
   return (
     <footer className="desktop-only" style={{
       background: 'var(--bg-surface)', borderTop: '1px solid var(--glass-border)',
@@ -27,6 +30,9 @@ export default function Footer({ locale }: { locale: Locale }) {
             <Link href={`/${locale}/tracking`} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 14 }}>{t.nav.tracking}</Link>
             <Link href={`/${locale}/services`} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 14 }}>{t.nav.services}</Link>
             <Link href={`/${locale}/about`} style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 14 }}>{t.nav.about}</Link>
+            <button onClick={() => setCalcOpen(true)} style={{ color: 'var(--primary)', background: 'none', border: 'none', padding: 0, margin: 0, textAlign: 'left', fontSize: 14, cursor: 'pointer' }}>
+              {t.common?.calculator || 'Calculator'}
+            </button>
           </div>
         </div>
         {/* Support */}
@@ -64,6 +70,7 @@ export default function Footer({ locale }: { locale: Locale }) {
         <span style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>{t.footer.copyright}</span>
         <span style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>{t.footer.designedWith}</span>
       </div>
+      <Calculator isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
     </footer>
   );
 }
