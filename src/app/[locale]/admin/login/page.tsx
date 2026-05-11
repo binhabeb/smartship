@@ -57,6 +57,7 @@ export default function AdminLogin({ params }: { params: Promise<{ locale: strin
     }
   };
 
+  return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 20, background: 'radial-gradient(ellipse at 50% 30%, rgba(0,122,255,0.08) 0%, transparent 60%), var(--bg-deep)' }}>
       {/* Back to Home Button */}
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} style={{ position: 'absolute', top: 24, [loc === 'ar' ? 'right' : 'left']: 24, zIndex: 10 }}>
