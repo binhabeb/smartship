@@ -133,7 +133,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ locale: s
           </FadeInView>
 
           <div className="glass-card" style={{ padding: 32, marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, borderBottom: '1px solid var(--glass-border)', pb: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, borderBottom: '1px solid var(--glass-border)', paddingBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--primary-light)' }}>
                 <Box size={20} />
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: 'white' }}>{ct.productDetails}</h3>
