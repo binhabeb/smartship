@@ -5,14 +5,12 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations, Locale } from '@/lib/translations';
 import { motion, AnimatePresence } from 'framer-motion';
-import Calculator from '@/components/Calculator';
 import { Calculator as CalcIcon } from 'lucide-react';
 
 export default function Header({ locale }: { locale: Locale }) {
   const t = getTranslations(locale);
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [calcOpen, setCalcOpen] = useState(false);
   const isAr = locale === 'ar';
   const otherLocale = isAr ? 'en' : 'ar';
   const switchedPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
@@ -65,13 +63,14 @@ export default function Header({ locale }: { locale: Locale }) {
         </Link>
 
         {/* Calculator */}
-        <button onClick={() => setCalcOpen(true)} style={{
+        <Link href={`/${locale}/calculator`} style={{
           padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
           background: 'var(--primary)', color: 'white', border: 'none',
           display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+          textDecoration: 'none'
         }}>
           <CalcIcon size={16} /> <span className="desktop-only">{t.common?.calculator || 'Calculator'}</span>
-        </button>
+        </Link>
 
         {/* Admin Login */}
         <Link href={`/${locale}/admin/login`} className="desktop-only btn-secondary" style={{
@@ -119,7 +118,6 @@ export default function Header({ locale }: { locale: Locale }) {
         )}
       </AnimatePresence>
 
-      <Calculator locale={locale} isOpen={calcOpen} onClose={() => setCalcOpen(false)} />
     </header>
   );
 }
