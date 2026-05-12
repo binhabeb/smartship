@@ -193,24 +193,27 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className={cn(
-              "fixed bottom-0 left-0 right-0 h-auto max-h-[92vh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
+              "fixed bottom-0 left-0 right-0 h-[85dvh] md:h-full md:top-0 md:left-auto md:w-[460px] z-[1000]",
               "glass-panel border-t md:border-l md:border-t-0 shadow-2xl flex flex-col",
-              "rounded-t-3xl md:rounded-none overflow-hidden font-sans"
+              "rounded-t-2xl md:rounded-none overflow-hidden font-sans"
             )}
             dir={isAr ? 'rtl' : 'ltr'}
             style={{ background: 'var(--bg-surface)' }}
           >
+            {/* Drag Handle - Mobile */}
+            <div className="md:hidden w-10 h-1 rounded-full bg-[var(--text-tertiary)]/40 mx-auto mt-2 mb-1 shrink-0" />
+
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 md:p-5 border-b border-[var(--glass-border)] shrink-0 bg-[var(--glass-bg)]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] glow-primary">
-                  <CalcIcon size={20} />
+            <div className="flex items-center justify-between px-4 py-2 md:p-5 border-b border-[var(--glass-border)] shrink-0 bg-[var(--glass-bg)]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)]">
+                  <CalcIcon size={18} />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-white tracking-wide">
+                  <h2 className="text-sm md:text-base font-bold text-white tracking-wide">
                     {t.title}
                   </h2>
-                  <p className="text-[11px] text-[var(--text-tertiary)]">{t.subtitle}</p>
+                  <p className="text-[10px] md:text-[11px] text-[var(--text-tertiary)]">{t.subtitle}</p>
                 </div>
               </div>
               <button
@@ -222,22 +225,22 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 min-h-0 overflow-y-auto p-3 md:p-5 pb-6 custom-scrollbar relative">
-              <div className="space-y-3 max-w-full">
+            <div className="flex-1 min-h-0 overflow-y-auto p-3 md:p-5 pb-4 custom-scrollbar relative">
+              <div className="space-y-3 md:space-y-4 max-w-full">
 
                 {/* Section 1: Shipping & Commission */}
-                <div className="glass-card !p-4">
-                  <div className="flex items-center justify-between mb-4 border-b border-[var(--glass-border)] pb-3">
+                <div className="glass-card !p-3 md:!p-4">
+                  <div className="flex items-center justify-between mb-3 md:mb-4 border-b border-[var(--glass-border)] pb-2 md:pb-3">
                     <div className="flex items-center gap-2 text-[var(--primary)]">
-                      <Truck size={18} />
-                      <h3 className="text-sm font-bold text-white">{t.shippingComm}</h3>
+                      <Truck size={16} />
+                      <h3 className="text-[13px] md:text-sm font-bold text-white">{t.shippingComm}</h3>
                     </div>
-                    <button onClick={handleReset} className="text-[11px] flex items-center gap-1 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors" title={t.reset}>
-                      <RotateCcw size={12} /> {t.reset}
+                    <button onClick={handleReset} className="text-[10px] md:text-[11px] flex items-center gap-1 text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors" title={t.reset}>
+                      <RotateCcw size={11} /> {t.reset}
                     </button>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     <CalcInputRow label={t.cbmRate} value={fixedCbmRate} onChange={setFixedCbmRate} suffix="USD" readOnly isAr={isAr} />
                     <CalcInputRow label={t.commission} value={officeCommission} onChange={setOfficeCommission} suffix="%" readOnly isAr={isAr} />
                   </div>
@@ -270,13 +273,13 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
                 </div>
 
                 {/* Section 2: Product Details */}
-                <div className="glass-card !p-4">
-                  <div className="flex items-center gap-2 mb-4 border-b border-[var(--glass-border)] pb-3 text-[var(--primary-light)]">
-                    <Box size={18} />
-                    <h3 className="text-sm font-bold text-white">{t.productDetails}</h3>
+                <div className="glass-card !p-3 md:!p-4">
+                  <div className="flex items-center gap-2 mb-3 md:mb-4 border-b border-[var(--glass-border)] pb-2 md:pb-3 text-[var(--primary-light)]">
+                    <Box size={16} />
+                    <h3 className="text-[13px] md:text-sm font-bold text-white">{t.productDetails}</h3>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     <CalcInputRow label={t.unitPrice} value={unitPriceRMB} onChange={setUnitPriceRMB} suffix="RMB" placeholder="0.00" isAr={isAr} />
                     <CalcInputRow label={t.unitsPerCarton} value={unitsPerCarton} onChange={setUnitsPerCarton} suffix="PCS" placeholder="0" isAr={isAr} />
                     <CalcInputRow label={t.cartonVolume} value={cartonVolumeCBM} onChange={setCartonVolumeCBM} suffix="CBM" placeholder="0.000" isAr={isAr} />
@@ -335,9 +338,9 @@ export default function Calculator({ isOpen, onClose, locale = 'en' }: { isOpen:
               </div>
             </div>
 
-            {/* Sticky Mobile Result Card */}
-            <div className="md:hidden z-50 shrink-0 p-3 bg-[var(--bg-card)] border-t border-[var(--glass-border)]">
-              <div className="glass-card !p-3.5 shadow-[0_10px_40px_rgba(0,102,255,0.15)] border-[var(--primary)]/30 bg-[var(--bg-surface)]">
+            {/* Mobile Result Card - Fixed at bottom */}
+            <div className="md:hidden z-50 shrink-0 px-3 py-2.5 bg-[var(--bg-surface)] border-t border-[var(--glass-border)]">
+              <div className="glass-card !p-3 shadow-[0_4px_20px_rgba(0,102,255,0.1)] border-[var(--primary)]/20 bg-[var(--bg-card)]">
                 <div
                   className="flex flex-col cursor-pointer"
                   onClick={() => setShowBreakdown(!showBreakdown)}
