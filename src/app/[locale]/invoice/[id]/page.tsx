@@ -13,6 +13,7 @@ interface InvoiceItem {
 interface Invoice {
   id: string;
   customer_name: string;
+  customer_phone?: string;
   shipment_id: string;
   status: 'paid' | 'unpaid';
   amount: number;
@@ -24,7 +25,6 @@ interface Invoice {
 export default function InvoicePublicPage({ params }: { params: Promise<{ locale: string, id: string }> }) {
   const { locale, id } = use(params);
   const loc = (locale === 'ar' ? 'ar' : 'en') as Locale;
-  // Removed unused t
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,21 +72,22 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
         </div>
 
         {/* Invoice Document */}
-        <div className="glass-card invoice-doc" style={{ padding: '40px', background: 'var(--bg-elevated)', borderRadius: 16, border: '1px solid var(--glass-border)', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+        <div className="glass-card invoice-doc" style={{ padding: '48px', background: 'var(--bg-elevated)', borderRadius: 16, border: '1px solid var(--glass-border)', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
           
-          {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid var(--glass-border)', paddingBottom: 24, marginBottom: 24 }}>
+          {/* Header with Logo */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid var(--glass-border)', paddingBottom: 24, marginBottom: 32 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 4 }}>
-                SmartShip
-              </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+              <img src="/logo.png" alt="Bin Habeb" style={{ height: 50, marginBottom: 8, display: 'block' }} />
+              <div style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600 }}>
                 {loc === 'ar' ? 'مؤسسة بن حبيب للتجارة والاستيراد' : 'Bin Habib Trading & Import'}
+              </div>
+              <div style={{ color: 'var(--text-tertiary)', fontSize: 12, marginTop: 4 }}>
+                📞 +8619383079080 | 🌐 www.binhabeb.com
               </div>
             </div>
             <div style={{ textAlign: 'end' }}>
               <h2 style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px 0', letterSpacing: 1 }}>{loc === 'ar' ? 'فاتورة' : 'INVOICE'}</h2>
-              <div style={{ fontFamily: 'var(--font-en)', fontSize: 16, fontWeight: 700, color: 'var(--primary)' }}>#{invoice.id}</div>
+              <div style={{ fontFamily: 'var(--font-en)', fontSize: 16, fontWeight: 700, color: 'var(--primary)' }}>#{invoice.id.substring(0, 8)}</div>
               <div style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 4 }}>
                 {new Date(invoice.created_at).toLocaleDateString(loc === 'ar' ? 'ar-SA' : 'en-US')}
               </div>
@@ -98,14 +99,17 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
             <div>
               <div style={{ fontSize: 12, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{loc === 'ar' ? 'مفوتر إلى:' : 'Billed To:'}</div>
               <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{invoice.customer_name}</div>
+              {invoice.customer_phone && (
+                <div style={{ fontSize: 14, color: 'var(--text-secondary)', fontFamily: 'var(--font-en)', marginBottom: 4 }} dir="ltr">📱 {invoice.customer_phone}</div>
+              )}
               <div style={{ fontSize: 14, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 12 }}>📦</span> {loc === 'ar' ? 'رقم الشحنة المربوطة:' : 'Shipment Ref:'} <Link href={`/${locale}/tracking?id=${invoice.shipment_id}`} style={{ fontFamily: 'var(--font-en)', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>{invoice.shipment_id}</Link>
+                <span style={{ fontSize: 12 }}>📦</span> {loc === 'ar' ? 'رقم الشحنة:' : 'Shipment Ref:'} <Link href={`/${locale}/tracking?id=${invoice.shipment_id}`} style={{ fontFamily: 'var(--font-en)', color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>{invoice.shipment_id}</Link>
               </div>
             </div>
             
             <div style={{ textAlign: 'end' }}>
               <div style={{ fontSize: 12, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{loc === 'ar' ? 'حالة الفاتورة:' : 'Status:'}</div>
-              <div style={{ display: 'inline-block', padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 700, background: invoice.status === 'paid' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: invoice.status === 'paid' ? '#10b981' : '#ef4444' }}>
+              <div style={{ display: 'inline-block', padding: '8px 20px', borderRadius: 20, fontSize: 14, fontWeight: 700, background: invoice.status === 'paid' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: invoice.status === 'paid' ? '#10b981' : '#ef4444' }}>
                 {invoice.status === 'paid' ? (loc === 'ar' ? '✅ مدفوعة' : '✅ PAID') : (loc === 'ar' ? '⏳ غير مدفوعة' : '⏳ UNPAID')}
               </div>
             </div>
@@ -123,7 +127,7 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
                 </tr>
               </thead>
               <tbody>
-                {(invoice.items || [{ description: invoice.details || 'رسوم شحن', quantity: 1, price: invoice.amount }]).map((item, i) => (
+                {(invoice.items || [{ description: invoice.details || (loc === 'ar' ? 'رسوم شحن' : 'Shipping fees'), quantity: 1, price: invoice.amount }]).map((item, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid var(--glass-border)' }}>
                     <td style={{ padding: '16px 8px', fontWeight: 600 }}>{item.description}</td>
                     <td style={{ padding: '16px 8px', textAlign: 'center', fontFamily: 'var(--font-en)' }}>{item.quantity}</td>
@@ -146,7 +150,7 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
                 <span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الضريبة (0%):' : 'Tax (0%):'}</span>
                 <span style={{ fontFamily: 'var(--font-en)', fontWeight: 600 }}>0.00 SAR</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 8px', marginTop: 8, background: 'var(--bg-default)', borderRadius: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 8px', marginTop: 8, background: 'rgba(0,102,255,0.08)', borderRadius: 8, border: '1px solid rgba(0,102,255,0.15)' }}>
                 <span style={{ fontWeight: 800, fontSize: 18 }}>{loc === 'ar' ? 'الإجمالي:' : 'Total:'}</span>
                 <span style={{ fontFamily: 'var(--font-en)', fontWeight: 900, fontSize: 18, color: 'var(--primary)' }}>{invoice.amount.toFixed(2)} SAR</span>
               </div>
@@ -155,21 +159,36 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
 
           {/* Footer */}
           <div style={{ marginTop: 60, paddingTop: 24, borderTop: '1px solid var(--glass-border)', textAlign: 'center', color: 'var(--text-tertiary)', fontSize: 13 }}>
-            <p style={{ marginBottom: 4 }}>{loc === 'ar' ? 'شكراً لثقتكم واختياركم بن حبيب للشحن.' : 'Thank you for your business.'}</p>
-            <p>{loc === 'ar' ? 'في حال وجود أي استفسارات، يرجى التواصل معنا.' : 'If you have any questions, please contact us.'}</p>
+            <p style={{ marginBottom: 4, fontWeight: 600 }}>{loc === 'ar' ? 'شكراً لثقتكم واختياركم بن حبيب للتجارة والاستيراد.' : 'Thank you for choosing Bin Habib Trading & Import.'}</p>
+            <p style={{ marginBottom: 8 }}>{loc === 'ar' ? 'في حال وجود أي استفسارات، يرجى التواصل معنا عبر واتساب.' : 'For any inquiries, please contact us via WhatsApp.'}</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 16, fontSize: 12, color: 'var(--text-tertiary)' }}>
+              <span>📞 +8619383079080</span>
+              <span>🌐 www.binhabeb.com</span>
+            </div>
           </div>
 
         </div>
 
       </div>
 
-      {/* Global Print Styles */}
+      {/* Print Styles - optimized for A4 */}
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          body { background: white !important; margin: 0; padding: 0; }
           body * { visibility: hidden; }
           .print-hidden { display: none !important; }
           .invoice-doc, .invoice-doc * { visibility: visible; }
-          .invoice-doc { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; border: none !important; padding: 0 !important; }
+          .invoice-doc { 
+            position: absolute; left: 0; top: 0; width: 100%; 
+            box-shadow: none !important; border: none !important; 
+            padding: 32px !important; margin: 0 !important;
+            background: white !important; color: #333 !important;
+            border-radius: 0 !important;
+            max-width: 100% !important;
+          }
+          .invoice-doc img { filter: none !important; }
+          @page { margin: 15mm; size: A4; }
         }
       `}} />
     </div>

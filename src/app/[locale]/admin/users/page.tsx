@@ -12,6 +12,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
   
   const [newUser, setNewUser] = useState({ email: '', role: 'data_entry', full_name: '' });
   const [editingUser, setEditingUser] = useState<any>(null);
@@ -33,14 +34,36 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
     fetchUsers();
   }, []);
 
+  const generateToken = () => {
+    return 'inv_' + Array.from(crypto.getRandomValues(new Uint8Array(24)))
+      .map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdding(true);
     try {
-      const { error } = await supabase.from('user_roles').insert([newUser]);
+      const token = generateToken();
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
+
+      const { error } = await supabase.from('user_roles').insert([{
+        ...newUser,
+        is_active: false,
+        invitation_token: token,
+        invitation_expires_at: expiresAt,
+      }]);
       if (error) throw error;
       
-      alert(loc === 'ar' ? 'تم تعيين الصلاحية للموظف بنجاح' : 'User role assigned successfully');
+      // Copy invite link
+      const baseUrl = window.location.origin;
+      const inviteLink = `${baseUrl}/${locale}/admin/invite/${token}`;
+      await navigator.clipboard.writeText(inviteLink);
+      
+      alert(loc === 'ar' 
+        ? `✅ تم إضافة الموظف وتم نسخ رابط الدعوة!\n\nأرسل هذا الرابط للموظف ليكمل تسجيل حسابه:\n${inviteLink}` 
+        : `✅ User added! Invitation link copied!\n\nSend this link to the employee:\n${inviteLink}`
+      );
+      
       setShowForm(false);
       setNewUser({ email: '', role: 'data_entry', full_name: '' });
       await fetchUsers();
@@ -50,6 +73,14 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
     } finally {
       setAdding(false);
     }
+  };
+
+  const copyInviteLink = async (token: string) => {
+    const baseUrl = window.location.origin;
+    const inviteLink = `${baseUrl}/${locale}/admin/invite/${token}`;
+    await navigator.clipboard.writeText(inviteLink);
+    setCopiedToken(token);
+    setTimeout(() => setCopiedToken(null), 3000);
   };
 
   const handleUpdateRole = async (e: React.FormEvent) => {
@@ -95,10 +126,10 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
   };
 
   const getRoleBadgeClass = (role: string) => {
-    if (role === 'admin') return 'badge-danger'; // red/orange
-    if (role === 'manager') return 'badge-approved'; // green
-    if (role === 'data_entry') return 'badge-new'; // blue
-    return 'badge-transit'; // yellow/gray
+    if (role === 'admin') return 'badge-danger';
+    if (role === 'manager') return 'badge-approved';
+    if (role === 'data_entry') return 'badge-new';
+    return 'badge-transit';
   };
 
   return (
@@ -107,7 +138,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
         <h1 style={{ fontSize: 24, fontWeight: 800 }}>{loc === 'ar' ? 'إدارة الموظفين والصلاحيات' : 'Users & Roles Management'}</h1>
         <div style={{ display: 'flex', gap: 12 }}>
           <button onClick={() => setShowForm(!showForm)} className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }}>
-            {showForm ? '❌' : '➕'} {loc === 'ar' ? 'تعيين موظف جديد' : 'Assign New User'}
+            {showForm ? '❌' : '➕'} {loc === 'ar' ? 'إضافة موظف جديد' : 'Add New Employee'}
           </button>
           <button onClick={fetchUsers} className="btn-secondary" style={{ padding: '8px 16px', fontSize: 13 }}>
             🔄 {loc === 'ar' ? 'تحديث' : 'Refresh'}
@@ -116,15 +147,15 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
       </div>
 
       <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: 16, borderRadius: 12, marginBottom: 24, border: '1px solid rgba(59, 130, 246, 0.3)', fontSize: 13, color: 'var(--text-secondary)' }}>
-        <strong>{loc === 'ar' ? 'ملاحظة هامة:' : 'Important Note:'}</strong> {loc === 'ar' ? 'يجب أولاً أن يقوم الموظف بإنشاء حساب في صفحة تسجيل الدخول، أو أن تقوم بإنشاء الحساب له من لوحة تحكم Supabase. هنا يمكنك ربط بريده الإلكتروني بالصلاحية المخصصة له.' : 'Users must first create an account or be invited via Supabase Auth. Here you assign specific roles to their email addresses.'}
+        <strong>{loc === 'ar' ? '💡 كيف يعمل النظام:' : '💡 How it works:'}</strong> {loc === 'ar' ? 'عند إضافة موظف جديد، سيتم إنشاء رابط دعوة تلقائياً. أرسل الرابط للموظف ليقوم بتعيين كلمة مروره وتفعيل حسابه.' : 'When you add a new employee, an invitation link is automatically created. Send the link to the employee to set their password and activate their account.'}
       </div>
 
       {showForm && (
         <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{loc === 'ar' ? 'تعيين صلاحيات موظف' : 'Assign User Role'}</h3>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{loc === 'ar' ? 'إضافة موظف جديد' : 'Add New Employee'}</h3>
           <form onSubmit={handleAddUser} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-              <div><label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>{loc === 'ar' ? 'البريد الإلكتروني للموظف' : 'User Email'}</label><input required className="input-glass" type="email" value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})} dir="ltr" /></div>
+              <div><label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>{loc === 'ar' ? 'البريد الإلكتروني للموظف' : 'Employee Email'}</label><input required className="input-glass" type="email" value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})} dir="ltr" /></div>
               <div><label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>{loc === 'ar' ? 'الاسم الكامل' : 'Full Name'}</label><input required className="input-glass" type="text" value={newUser.full_name} onChange={e => setNewUser({...newUser, full_name: e.target.value})} /></div>
               <div>
                 <label style={{ fontSize: 12, marginBottom: 4, display: 'block' }}>{loc === 'ar' ? 'مستوى الصلاحية' : 'Role Level'}</label>
@@ -137,7 +168,7 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-              <button type="submit" disabled={adding} className="btn-success" style={{ padding: '8px 24px' }}>{adding ? '...' : (loc === 'ar' ? 'حفظ وتعيين' : 'Save Assignment')}</button>
+              <button type="submit" disabled={adding} className="btn-success" style={{ padding: '8px 24px' }}>{adding ? '...' : (loc === 'ar' ? 'إضافة وإنشاء رابط دعوة' : 'Add & Create Invite Link')}</button>
             </div>
           </form>
         </div>
@@ -145,21 +176,22 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
 
       <div className="glass-card" style={{ padding: '24px 0', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto', padding: '0 24px' }}>
-          <table className="glass-table" style={{ minWidth: 800 }}>
+          <table className="glass-table" style={{ minWidth: 900 }}>
             <thead>
               <tr>
-                <th>{loc === 'ar' ? 'الموظف' : 'User'}</th>
+                <th>{loc === 'ar' ? 'الموظف' : 'Employee'}</th>
                 <th>{loc === 'ar' ? 'البريد الإلكتروني' : 'Email'}</th>
-                <th>{loc === 'ar' ? 'الصلاحية الممنوحة' : 'Assigned Role'}</th>
-                <th>{loc === 'ar' ? 'تاريخ التعيين' : 'Date Assigned'}</th>
+                <th>{loc === 'ar' ? 'الصلاحية' : 'Role'}</th>
+                <th>{loc === 'ar' ? 'حالة الحساب' : 'Account Status'}</th>
+                <th>{loc === 'ar' ? 'تاريخ التعيين' : 'Date'}</th>
                 <th style={{ textAlign: 'end' }}>{loc === 'ar' ? 'إجراءات' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={4} style={{ textAlign: 'center', padding: 40 }}>Loading...</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: 40 }}>Loading...</td></tr>
               ) : users.length === 0 ? (
-                <tr><td colSpan={4} style={{ textAlign: 'center', padding: 40, color: 'var(--text-tertiary)' }}>{loc === 'ar' ? 'لم يتم تعيين أي صلاحيات بعد' : 'No roles assigned yet'}</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: 40, color: 'var(--text-tertiary)' }}>{loc === 'ar' ? 'لم يتم إضافة أي موظفين بعد' : 'No employees added yet'}</td></tr>
               ) : (
                 users.map(u => (
                   <tr key={u.email}>
@@ -170,17 +202,35 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
                         {getRoleLabel(u.role)}
                       </span>
                     </td>
+                    <td>
+                      {u.is_active ? (
+                        <span style={{ color: 'var(--success)', fontWeight: 600, fontSize: 13 }}>✅ {loc === 'ar' ? 'مفعّل' : 'Active'}</span>
+                      ) : (
+                        <span style={{ color: 'var(--warning)', fontWeight: 600, fontSize: 13 }}>⏳ {loc === 'ar' ? 'بانتظار التفعيل' : 'Pending'}</span>
+                      )}
+                    </td>
                     <td style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                       {new Date(u.created_at).toLocaleDateString(loc === 'ar' ? 'ar-SA' : 'en-US')}
                     </td>
                     <td style={{ textAlign: 'end' }}>
-                      <button 
-                        onClick={() => { setEditingUser({...u}); setShowDeleteConfirm(false); }} 
-                        className="btn-secondary" 
-                        style={{ padding: '6px 12px', fontSize: 12, borderRadius: 8 }}
-                      >
-                        {loc === 'ar' ? 'تعديل' : 'Edit'}
-                      </button>
+                      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                        {!u.is_active && u.invitation_token && (
+                          <button
+                            onClick={() => copyInviteLink(u.invitation_token)}
+                            className="btn-secondary"
+                            style={{ padding: '6px 12px', fontSize: 12, borderRadius: 8 }}
+                          >
+                            {copiedToken === u.invitation_token ? '✅' : '🔗'} {loc === 'ar' ? 'نسخ رابط الدعوة' : 'Copy Invite'}
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => { setEditingUser({...u}); setShowDeleteConfirm(false); }} 
+                          className="btn-secondary" 
+                          style={{ padding: '6px 12px', fontSize: 12, borderRadius: 8 }}
+                        >
+                          {loc === 'ar' ? 'تعديل' : 'Edit'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -251,20 +301,10 @@ export default function AdminUsersPage({ params }: { params: Promise<{ locale: s
                     : `Are you sure you want to remove (${editingUser.email})? All permissions will be revoked immediately and this action cannot be undone.`}
                 </p>
                 <div style={{ display: 'flex', gap: 16 }}>
-                  <button 
-                    onClick={() => setShowDeleteConfirm(false)} 
-                    className="btn-secondary" 
-                    style={{ flex: 1, padding: '12px' }}
-                    disabled={updating}
-                  >
+                  <button onClick={() => setShowDeleteConfirm(false)} className="btn-secondary" style={{ flex: 1, padding: '12px' }} disabled={updating}>
                     {loc === 'ar' ? 'تراجع' : 'Back'}
                   </button>
-                  <button 
-                    onClick={handleDeleteUser} 
-                    className="btn-danger" 
-                    style={{ flex: 1, padding: '12px' }}
-                    disabled={updating}
-                  >
+                  <button onClick={handleDeleteUser} className="btn-danger" style={{ flex: 1, padding: '12px' }} disabled={updating}>
                     {updating ? '...' : (loc === 'ar' ? 'تأكيد الإزالة نهائياً' : 'Confirm Removal')}
                   </button>
                 </div>

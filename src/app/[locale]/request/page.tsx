@@ -9,6 +9,7 @@ import { FadeInView } from '@/components/Animations';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { supabase } from '@/lib/supabase';
+import { compressImage } from '@/lib/imageUtils';
 
 export default function RequestPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
@@ -148,14 +149,19 @@ export default function RequestPage({ params }: { params: Promise<{ locale: stri
                     <div>
                       <label style={{ display: 'block', fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{t.request.productImage}</label>
                       <label style={{ display: 'block', border: '2px dashed var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: 32, textAlign: 'center', cursor: 'pointer' }}>
-                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
+                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              update('productImage', reader.result as string);
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              const compressed = await compressImage(file);
+                              update('productImage', compressed);
+                            } catch (err) {
+                              console.error('Image compression failed:', err);
+                              // Fallback to original
+                              const reader = new FileReader();
+                              reader.onloadend = () => update('productImage', reader.result as string);
+                              reader.readAsDataURL(file);
+                            }
                           }
                         }} />
                         {form.productImage ? (

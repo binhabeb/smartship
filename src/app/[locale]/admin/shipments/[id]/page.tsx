@@ -16,15 +16,11 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
   const [updating, setUpdating] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [adminNotes, setAdminNotes] = useState('');
+  const [showWhatsAppSuggestion, setShowWhatsAppSuggestion] = useState(false);
 
   const fetchShipment = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('shipments')
-      .select('*')
-      .eq('id', id)
-      .single();
-    
+    const { data } = await supabase.from('shipments').select('*').eq('id', id).single();
     if (data) {
       setShipment(data);
       setNewStatus(data.current_status);
@@ -33,49 +29,7 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchShipment();
-  }, [id]);
-
-  const handleUpdate = async () => {
-    setUpdating(true);
-    try {
-      const updates: any = {
-        current_status: newStatus,
-        admin_notes: adminNotes,
-        updated_at: new Date().toISOString()
-      };
-
-      // If status changed, append to history
-      if (newStatus !== shipment.current_status) {
-        const historyEntry = {
-          key: newStatus,
-          label: {
-            ar: getStatusLabelAr(newStatus),
-            en: getStatusLabelEn(newStatus)
-          },
-          timestamp: new Date().toLocaleString('en-US', { hour12: true }),
-          completed: true
-        };
-        updates.status_history = [...(shipment.status_history || []), historyEntry];
-      }
-
-      const { error } = await supabase
-        .from('shipments')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      await fetchShipment();
-      alert(loc === 'ar' ? 'تم تحديث الشحنة بنجاح' : 'Shipment updated successfully');
-    } catch (error) {
-      console.error(error);
-      alert(loc === 'ar' ? 'حدث خطأ أثناء التحديث' : 'Error updating shipment');
-    } finally {
-      setUpdating(false);
-    }
-  };
+  useEffect(() => { fetchShipment(); }, [id]);
 
   const getStatusLabelAr = (status: string) => {
     const map: Record<string, string> = {
@@ -91,7 +45,55 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
     return map[status] || status;
   };
 
-  const whatsappMessage = shipment ? `أهلاً ${shipment.customer_name}، أود إعلامك أن شحنتك رقم ${shipment.id} حالتها الآن: ${getStatusLabelAr(shipment.current_status)}.` : '';
+  const handleUpdate = async () => {
+    setUpdating(true);
+    try {
+      const updates: any = {
+        current_status: newStatus,
+        admin_notes: adminNotes,
+        updated_at: new Date().toISOString()
+      };
+
+      if (newStatus !== shipment.current_status) {
+        const historyEntry = {
+          key: newStatus,
+          label: { ar: getStatusLabelAr(newStatus), en: getStatusLabelEn(newStatus) },
+          timestamp: new Date().toLocaleString('en-US', { hour12: true }),
+          completed: true
+        };
+        updates.status_history = [...(shipment.status_history || []), historyEntry];
+      }
+
+      const { error } = await supabase.from('shipments').update(updates).eq('id', id);
+      if (error) throw error;
+      
+      // Show WhatsApp suggestion if status changed
+      if (newStatus !== shipment.current_status) {
+        setShowWhatsAppSuggestion(true);
+      } else {
+        router.push(`/${locale}/admin/shipments`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(loc === 'ar' ? 'حدث خطأ أثناء التحديث' : 'Error updating shipment');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const sendWhatsAppUpdate = () => {
+    if (!shipment) return;
+    const phone = shipment.customer_phone.replace(/[^0-9+]/g, '').replace('+', '');
+    const url = typeof window !== 'undefined' ? window.location.origin : '';
+    const trackingLink = `${url}/${locale}/tracking?id=${shipment.id}`;
+    
+    const msg = loc === 'ar'
+      ? `مرحباً ${shipment.customer_name}! 👋\n\nتم تحديث حالة شحنتك رقم *${shipment.id}*:\n\n📍 الحالة الحالية: *${getStatusLabelAr(newStatus)}*\n📦 المنتج: ${shipment.product}\n\n🔗 تتبع الشحنة: ${trackingLink}\n\n📞 للتواصل واتساب: +8619383079080\n🌐 الموقع: www.binhabeb.com\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!`
+      : `Hello ${shipment.customer_name}! 👋\n\nYour shipment *${shipment.id}* has been updated:\n\n📍 Current Status: *${getStatusLabelEn(newStatus)}*\n📦 Product: ${shipment.product}\n\n🔗 Track Shipment: ${trackingLink}\n\n📞 WhatsApp: +8619383079080\n🌐 Website: www.binhabeb.com\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!`;
+    
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    router.push(`/${locale}/admin/shipments`);
+  };
 
   if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Loading...</div>;
   if (!shipment) return <div style={{ padding: 40, textAlign: 'center' }}>Shipment not found</div>;
@@ -118,12 +120,7 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
             <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الاسم:' : 'Name:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.customer_name}</strong></div>
             <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الجوال:' : 'Phone:'}</span> <strong style={{ marginInlineStart: 8, fontFamily: 'var(--font-en)' }} dir="ltr">{shipment.customer_phone}</strong></div>
             <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'المدينة:' : 'City:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.city}</strong></div>
-            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الوجهة:' : 'Destination:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.destination}</strong></div>
-            <div style={{ marginTop: 12 }}>
-              <a href={`https://wa.me/${shipment.customer_phone.replace('+', '')}?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp" style={{ textDecoration: 'none', display: 'inline-block', width: '100%', textAlign: 'center' }}>
-                💬 {loc === 'ar' ? 'مراسلة عبر واتساب' : 'Message on WhatsApp'}
-              </a>
-            </div>
+            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الوجهة:' : 'Destination:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.destination || '—'}</strong></div>
           </div>
         </div>
 
@@ -134,10 +131,47 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'المنتج:' : 'Product:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.product}</strong></div>
-            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الوصف:' : 'Description:'}</span> <span style={{ marginInlineStart: 8 }}>{shipment.product_description}</span></div>
-            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الكمية:' : 'Quantity:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.quantity}</strong></div>
+            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الوصف:' : 'Description:'}</span> <span style={{ marginInlineStart: 8 }}>{shipment.product_description || '—'}</span></div>
+            <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الكمية:' : 'Quantity:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.quantity || 1}</strong></div>
+            {shipment.color && <div><span style={{ color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'اللون:' : 'Color:'}</span> <strong style={{ marginInlineStart: 8 }}>{shipment.color}</strong></div>}
           </div>
         </div>
+
+        {/* Photos */}
+        {((shipment.photos && shipment.photos.length > 0) || shipment.product_image) && (
+          <div className="glass-card" style={{ padding: 24, gridColumn: '1 / -1' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, borderBottom: '1px solid var(--glass-border)', paddingBottom: 8 }}>
+              {loc === 'ar' ? 'صور الشحنة' : 'Shipment Photos'}
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 12 }}>
+              {(shipment.photos && shipment.photos.length > 0 ? shipment.photos : [shipment.product_image]).filter(Boolean).map((photo: string, i: number) => (
+                <div key={i} style={{ aspectRatio: '1', borderRadius: 12, overflow: 'hidden', background: 'var(--bg-elevated)' }}>
+                  <img src={photo} alt={`Photo ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Status History */}
+        {shipment.status_history && shipment.status_history.length > 0 && (
+          <div className="glass-card" style={{ padding: 24, gridColumn: '1 / -1' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, borderBottom: '1px solid var(--glass-border)', paddingBottom: 8 }}>
+              {loc === 'ar' ? 'سجل التحديثات' : 'Status History'}
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[...shipment.status_history].reverse().map((entry: any, i: number) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: entry.completed ? 'var(--success)' : 'var(--text-tertiary)' }} />
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontWeight: 600 }}>{loc === 'ar' ? entry.label?.ar : entry.label?.en}</span>
+                  </div>
+                  <span style={{ fontSize: 12, color: 'var(--text-tertiary)', fontFamily: 'var(--font-en)' }}>{entry.timestamp}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Management & Status Update */}
         <div className="glass-card" style={{ padding: 24, gridColumn: '1 / -1' }}>
@@ -171,14 +205,44 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
             </div>
           </div>
           
-          <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <a 
+              href={`https://wa.me/${shipment.customer_phone.replace(/[^0-9]/g, '')}`}
+              target="_blank" rel="noopener noreferrer" 
+              className="btn-whatsapp" 
+              style={{ textDecoration: 'none', padding: '10px 20px', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              💬 {loc === 'ar' ? 'مراسلة العميل' : 'Message Customer'}
+            </a>
             <button onClick={handleUpdate} disabled={updating} className="btn-success" style={{ padding: '12px 32px', opacity: updating ? 0.7 : 1 }}>
               {updating ? '...' : (loc === 'ar' ? 'حفظ التحديثات' : 'Save Updates')}
             </button>
           </div>
         </div>
-
       </div>
+
+      {/* WhatsApp Suggestion Modal */}
+      {showWhatsAppSuggestion && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-card" style={{ padding: 32, maxWidth: 420, width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>✅</div>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>{loc === 'ar' ? 'تم تحديث الحالة!' : 'Status Updated!'}</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>
+              {loc === 'ar' 
+                ? `تم تحديث حالة الشحنة إلى "${getStatusLabelAr(newStatus)}". هل تود إبلاغ العميل (${shipment.customer_name}) عبر واتساب؟` 
+                : `Status updated to "${getStatusLabelEn(newStatus)}". Notify ${shipment.customer_name} via WhatsApp?`}
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => router.push(`/${locale}/admin/shipments`)} className="btn-secondary" style={{ flex: 1, padding: '12px' }}>
+                {loc === 'ar' ? 'تخطي' : 'Skip'}
+              </button>
+              <button onClick={sendWhatsAppUpdate} className="btn-whatsapp" style={{ flex: 1, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                💬 {loc === 'ar' ? 'إرسال للعميل' : 'Send to Customer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -65,6 +65,7 @@ export default function AdminInvoicesPage({ params }: { params: Promise<{ locale
       const { data, error } = await supabase.from('invoices').insert([{
         shipment_id: newInvoice.shipment_id,
         customer_name: newInvoice.customer_name,
+        customer_phone: newInvoice.customer_phone,
         amount: amount,
         details: newInvoice.details,
         items: invoiceItems,
@@ -106,16 +107,24 @@ export default function AdminInvoicesPage({ params }: { params: Promise<{ locale
     }
   };
 
-  const handleWhatsApp = (inv: any) => {
+  const handleWhatsApp = async (inv: any) => {
     const url = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
     const invoiceLink = `${url}/${locale}/invoice/${inv.id}`;
     const trackingLink = `${url}/${locale}/tracking?id=${inv.shipment_id}`;
     
-    const msg = loc === 'ar'
-      ? `مرحباً ${inv.customer_name}،\nتم إصدار فاتورة جديدة لشحنتك رقم *${inv.shipment_id}*.\n\n💰 المبلغ الإجمالي: ${inv.amount} SAR\n🧾 عرض الفاتورة: ${invoiceLink}\n📦 تتبع الشحنة: ${trackingLink}\n\nشكراً لتعاملك مع بن حبيب للشحن.`
-      : `Hello ${inv.customer_name},\nA new invoice has been issued for your shipment *${inv.shipment_id}*.\n\n💰 Total Amount: ${inv.amount} SAR\n🧾 View Invoice: ${invoiceLink}\n📦 Track Shipment: ${trackingLink}\n\nThank you for choosing Bin Habib.`;
+    // Get customer phone from invoice or shipment
+    let phone = inv.customer_phone || '';
+    if (!phone && inv.shipment_id) {
+      const { data } = await supabase.from('shipments').select('customer_phone').eq('id', inv.shipment_id).single();
+      if (data) phone = data.customer_phone;
+    }
+    phone = phone.replace(/[^0-9+]/g, '').replace('+', '');
     
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    const msg = loc === 'ar'
+      ? `مرحباً ${inv.customer_name}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *${inv.shipment_id}*.\n\n💰 المبلغ الإجمالي: *${inv.amount} SAR*\n🧾 عرض الفاتورة: ${invoiceLink}\n📦 تتبع الشحنة: ${trackingLink}\n\n📞 للتواصل واتساب: +8619383079080\n🌐 الموقع: www.binhabeb.com\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢`
+      : `Hello ${inv.customer_name}! 👋\n\nA new invoice has been issued for your shipment *${inv.shipment_id}*.\n\n💰 Total: *${inv.amount} SAR*\n🧾 View Invoice: ${invoiceLink}\n📦 Track Shipment: ${trackingLink}\n\n📞 WhatsApp: +8619383079080\n🌐 Website: www.binhabeb.com\n\nThank you for choosing Bin Habib Trading & Import 🚢`;
+    
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   return (

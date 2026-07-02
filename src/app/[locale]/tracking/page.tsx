@@ -117,19 +117,15 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
                   <div style={{ fontSize: 24, fontWeight: 800, color: getStatusColor(shipment.currentStatus), marginBottom: 8 }}>
                     {shipment.currentStatus === 'delivered' ? '✅' : '📍'} {getStatusLabel(shipment.currentStatus)}
                   </div>
-                  <div className="glass-card" style={{ padding: '12px 20px', marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 16 }}>
+                    <div className="glass-card" style={{ padding: '12px 20px' }}>
                       <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{t.tracking.shipmentId}</div>
                       <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)', fontFamily: 'var(--font-en)' }}>{shipment.id}</div>
                     </div>
-                    <span style={{ fontSize: 18 }}>📦</span>
-                  </div>
-                  <div className="glass-card" style={{ padding: '12px 20px', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
+                    <div className="glass-card" style={{ padding: '12px 20px' }}>
                       <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{t.tracking.customerName}</div>
                       <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--primary)' }}>{shipment.customerName}</div>
                     </div>
-                    <span style={{ fontSize: 18 }}>👤</span>
                   </div>
                 </div>
 
@@ -153,13 +149,10 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
                 {/* Product Info */}
                 <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{t.tracking.productInfo}</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <div style={{ width: 60, height: 60, borderRadius: 12, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>⌚</div>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{shipment.product}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الكمية' : 'Qty'}: {shipment.quantity}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'اللون' : 'Color'}: {shipment.color}</div>
-                    </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ fontWeight: 600, fontSize: 16 }}>{shipment.product}</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'الكمية' : 'Qty'}: {shipment.quantity}</div>
+                    {shipment.color && <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{loc === 'ar' ? 'اللون' : 'Color'}: {shipment.color}</div>}
                   </div>
                 </div>
 
@@ -167,13 +160,15 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
                 <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{t.tracking.shipmentPhotos}</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: 12 }}>
-                    {shipment.productImage ? (
-                      <div style={{
-                        aspectRatio: '1', borderRadius: 12, background: 'var(--bg-elevated)',
-                        overflow: 'hidden', position: 'relative'
-                      }}>
-                        <img src={shipment.productImage} alt="Shipment" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
+                    {(shipment.photos.length > 0 ? shipment.photos : (shipment.productImage ? [shipment.productImage] : [])).length > 0 ? (
+                      (shipment.photos.length > 0 ? shipment.photos : [shipment.productImage]).filter((p): p is string => Boolean(p)).map((photo, i) => (
+                        <div key={i} style={{
+                          aspectRatio: '1', borderRadius: 12, background: 'var(--bg-elevated)',
+                          overflow: 'hidden'
+                        }}>
+                          <img src={photo} alt={`Photo ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      ))
                     ) : (
                       <div style={{
                         aspectRatio: '1', borderRadius: 12, background: 'var(--bg-elevated)',
