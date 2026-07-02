@@ -80,7 +80,7 @@ export default function AdminAuditPage({ params }: { params: Promise<{ locale: s
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, marginBottom: 4 }}>{log.desc}</div>
                   <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--primary)', fontFamily: 'var(--font-en)' }}>{log.id}</span> • {log.customer_name}
+                    <span style={{ fontWeight: 600, color: 'var(--primary)', fontFamily: 'var(--font-en)' }}>{log.id.length > 15 ? log.id.substring(0, 8).toUpperCase() : log.id}</span> • {log.customer_name}
                   </div>
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-tertiary)', fontFamily: 'var(--font-en)', textAlign: 'end' }}>

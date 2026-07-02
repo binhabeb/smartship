@@ -1,5 +1,6 @@
 'use client';
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getTranslations, Locale } from '@/lib/translations';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -13,14 +14,24 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
   const { locale } = use(params);
   const loc = (locale === 'ar' ? 'ar' : 'en') as Locale;
   const t = getTranslations(loc);
-  const [trackingId, setTrackingId] = useState('');
+  const searchParams = useSearchParams();
+  const urlId = searchParams.get('id');
+
+  const [trackingId, setTrackingId] = useState(urlId || '');
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleSearch = async () => {
-    if (!trackingId.trim()) return;
+  useEffect(() => {
+    if (urlId && !searched && !shipment) {
+      handleSearch(urlId);
+    }
+  }, [urlId]);
+
+  const handleSearch = async (overrideId?: string) => {
+    const idToSearch = (typeof overrideId === 'string' ? overrideId : trackingId).trim();
+    if (!idToSearch) return;
     setLoading(true);
     setSearched(false);
     
@@ -28,7 +39,7 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
       const { data, error } = await supabase
         .from('shipments')
         .select('*')
-        .eq('id', trackingId.trim())
+        .ilike('id', idToSearch)
         .single();
 
       if (error) {

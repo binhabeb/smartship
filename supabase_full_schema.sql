@@ -163,3 +163,13 @@ CREATE TRIGGER update_shipments_updated_at
     BEFORE UPDATE ON shipments
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================
+-- Step 8: Grant Permissions to API Roles (Fixes 42501 Permission Denied)
+-- ============================================================
+GRANT ALL ON TABLE import_requests TO anon, authenticated, service_role;
+GRANT ALL ON TABLE shipments TO anon, authenticated, service_role;
+GRANT ALL ON TABLE invoices TO anon, authenticated, service_role;
+GRANT ALL ON TABLE user_roles TO anon, authenticated, service_role;
+GRANT ALL ON TABLE site_settings TO anon, authenticated, service_role;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
