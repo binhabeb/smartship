@@ -110,7 +110,7 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
                 placeholder={t.tracking.searchPlaceholder}
                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
                 style={{ flex: 1, border: 'none', background: 'transparent' }} />
-              <button className="btn-primary" onClick={handleSearch} disabled={loading} style={{ padding: '12px 28px', whiteSpace: 'nowrap', opacity: loading ? 0.7 : 1 }}>
+              <button className="btn-primary" onClick={() => handleSearch()} disabled={loading} style={{ padding: '12px 28px', whiteSpace: 'nowrap', opacity: loading ? 0.7 : 1 }}>
                 {loading ? '...' : t.tracking.searchButton}
               </button>
             </div>
