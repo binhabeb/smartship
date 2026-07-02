@@ -1,5 +1,5 @@
 'use client';
-import { use, useState, useEffect } from 'react';
+import { use, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getTranslations, Locale } from '@/lib/translations';
 import Header from '@/components/Header';
@@ -10,9 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { Shipment } from '@/lib/types';
 
-export default function TrackingPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = use(params);
-  const loc = (locale === 'ar' ? 'ar' : 'en') as Locale;
+function TrackingContent({ loc }: { loc: Locale }) {
   const t = getTranslations(loc);
   const searchParams = useSearchParams();
   const urlId = searchParams.get('id');
@@ -95,8 +93,6 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
   };
 
   return (
-    <>
-      <Header locale={loc} />
       <main style={{ paddingTop: 'calc(var(--header-height) + 40px)', minHeight: '100vh', padding: '120px 20px 120px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <FadeInView>
@@ -218,6 +214,18 @@ export default function TrackingPage({ params }: { params: Promise<{ locale: str
           </AnimatePresence>
         </div>
       </main>
+  );
+}
+
+export default function TrackingPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params);
+  const loc = (locale === 'ar' ? 'ar' : 'en') as Locale;
+  return (
+    <>
+      <Header locale={loc} />
+      <Suspense fallback={<main style={{ paddingTop: 'calc(var(--header-height) + 40px)', minHeight: '100vh', padding: '120px 20px 120px' }}></main>}>
+        <TrackingContent loc={loc} />
+      </Suspense>
       <Footer locale={loc} />
       <BottomNav locale={loc} />
     </>
