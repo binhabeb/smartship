@@ -5,9 +5,8 @@
 -- ============================================================
 
 -- ============================================================
--- Step 0: Backup existing user_roles before dropping
+-- Step 0: Removed backup logic because user_roles doesn't exist
 -- ============================================================
-CREATE TEMP TABLE _backup_user_roles AS SELECT * FROM user_roles;
 
 -- ============================================================
 -- Step 1: Drop existing tables (order matters for foreign keys)
@@ -102,14 +101,9 @@ CREATE TABLE site_settings (
 );
 
 -- ============================================================
--- Step 3: Restore user_roles from backup
+-- Step 3: Skipped restore user_roles (start fresh or add users via UI)
 -- ============================================================
-INSERT INTO user_roles (email, full_name, role, is_active, created_at)
-SELECT email, full_name, role, true, created_at
-FROM _backup_user_roles
-ON CONFLICT (email) DO NOTHING;
-
-DROP TABLE IF EXISTS _backup_user_roles;
+-- Removed insert from _backup_user_roles to prevent errors
 
 -- ============================================================
 -- Step 4: Insert default site_settings
