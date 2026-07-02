@@ -140,7 +140,7 @@ function TrackingContent({ loc }: { loc: Locale }) {
                 <div className="glass-card" style={{ padding: 28, marginBottom: 24 }}>
                   <div className="timeline-line">
                     {[...shipment.statusHistory].reverse().map((status, i) => (
-                      <div key={i} style={{ position: 'relative', paddingBottom: i < shipment.statusHistory.length - 1 ? 32 : 0, paddingInlineStart: 20 }}>
+                      <div key={i} style={{ position: 'relative', paddingBottom: i < shipment.statusHistory.length - 1 ? 32 : 0, paddingInlineStart: 44 }}>
                         <div className={`timeline-dot ${status.completed ? 'completed' : 'pending'}`}>
                           {status.completed ? '✓' : ''}
                         </div>
@@ -191,7 +191,7 @@ function TrackingContent({ loc }: { loc: Locale }) {
                   <button className="btn-secondary" onClick={copyId} style={{ flex: 1 }}>
                     {copied ? '✅ ' + t.tracking.copied : '📋 ' + t.tracking.copyId}
                   </button>
-                  <a href={`https://wa.me/966501234567?text=${encodeURIComponent(`أهلاً، أود الاستفسار عن شحنتي رقم ${shipment.id}`)}`}
+                  <a href={`https://wa.me/8619383079080?text=${encodeURIComponent(`أهلاً، أود الاستفسار عن شحنتي رقم ${shipment.id}`)}`}
                     className="btn-whatsapp" style={{ flex: 1, textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
                     💬 {t.tracking.contactWhatsapp}
                   </a>

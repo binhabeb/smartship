@@ -53,23 +53,23 @@ export default function Header({ locale }: { locale: Locale }) {
       {/* Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {/* Language Toggle */}
-        <Link href={switchedPath || `/${otherLocale}`} style={{
+        <Link href={switchedPath || `/${otherLocale}`} className="lang-btn" style={{
           padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
           background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
           color: 'var(--text-primary)', textDecoration: 'none',
-          transition: 'all var(--transition-fast)', display: 'flex', alignItems: 'center', gap: 6,
+          transition: 'all var(--transition-fast)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
         }}>
-          🌐 {isAr ? 'EN' : 'عربي'}
+          <span style={{ fontSize: 16 }}>🌐</span> <span className="lang-text">{isAr ? 'EN' : 'عربي'}</span>
         </Link>
 
         {/* Calculator */}
-        <Link href={`/${locale}/calculator`} style={{
+        <Link href={`/${locale}/calculator`} className="calc-btn" style={{
           padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
           background: 'var(--primary)', color: 'white', border: 'none',
-          display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
           textDecoration: 'none'
         }}>
-          <CalcIcon size={16} /> <span className="desktop-only">{t.common?.calculator || 'Calculator'}</span>
+          <CalcIcon size={18} className="calc-icon" /> <span className="desktop-only">{t.common?.calculator || 'Calculator'}</span>
         </Link>
 
         {/* Admin Login */}
