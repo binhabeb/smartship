@@ -82,7 +82,7 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
           {/* Header Section */}
           <div className="doc-header">
             <div className="doc-header-left">
-              <h2 className="doc-title">{isAr ? 'فاتورة ضريبية إلكترونية' : 'ELECTRONIC TAX INVOICE'}</h2>
+              <h2 className="doc-title">{isAr ? 'فاتورة إلكترونية' : 'ELECTRONIC INVOICE'}</h2>
               <div className="doc-id">INV-{invoice.id.substring(0, 8).toUpperCase()}</div>
               <div className="doc-date">
                 {new Date(invoice.created_at).toLocaleDateString(isAr ? 'en-CA' : 'en-CA').replace(/-/g, '/')}
@@ -96,11 +96,8 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
                   <div className="doc-company-sub">Trading & Import</div>
                   <div className="doc-company-ar">بن حبيب للتجارة والاستيراد</div>
                 </div>
-                {/* SVG Logo to ensure print clarity */}
-                <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 20 H50 C65 20 75 30 75 45 C75 55 68 62 58 66 L75 80 H55 L42 66 H35 V80 H20 V20 Z" fill="#0066FF"/>
-                  <path d="M35 32 H50 C58 32 62 36 62 43 C62 50 58 54 50 54 H35 V32 Z" fill="#FFFFFF" className="logo-inner"/>
-                </svg>
+                {/* Real Company Logo */}
+                <img src="/logo.png" alt="Bin Habeb" className="doc-logo-img" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               </div>
               
               <div className="doc-contact">
@@ -110,23 +107,25 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
             </div>
           </div>
 
-          {/* Info Section */}
+          {/* Info Section - 3 columns: right=name+phone, center=shipment#, left=status */}
           <div className="doc-info-grid">
-            <div className="info-box status-box">
-              <div className="info-label">{isAr ? 'حالة الفاتورة' : 'Invoice Status'}</div>
-              <div className={`status-badge ${isPaid ? 'paid' : 'unpaid'}`}>
-                {isPaid ? (isAr ? '✅ مدفوعة' : '✅ PAID') : (isAr ? '⏳ غير مدفوعة' : '⏳ UNPAID')}
-              </div>
-            </div>
-
             <div className="info-box billed-to-box">
               <div className="info-label">{isAr ? 'مفوتر إلى' : 'Billed To'}</div>
               <div className="customer-name">{invoice.customer_name}</div>
               {invoice.customer_phone && (
                 <div className="customer-phone" dir="ltr">📞 {invoice.customer_phone}</div>
               )}
-              <div className="shipment-ref">
-                📦 {isAr ? 'الشنطة:' : 'Bag:'} <strong>{invoice.shipment_id}</strong>
+            </div>
+
+            <div className="info-box shipment-box">
+              <div className="info-label">{isAr ? 'رقم الشحنة' : 'Shipment ID'}</div>
+              <div className="shipment-id-large">📦 <strong>{invoice.shipment_id}</strong></div>
+            </div>
+
+            <div className="info-box status-box">
+              <div className="info-label">{isAr ? 'حالة الفاتورة' : 'Invoice Status'}</div>
+              <div className={`status-badge ${isPaid ? 'paid' : 'unpaid'}`}>
+                {isPaid ? (isAr ? '✅ مدفوعة' : '✅ PAID') : (isAr ? '⏳ غير مدفوعة' : '⏳ UNPAID')}
               </div>
             </div>
           </div>
@@ -298,19 +297,32 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
 
         .doc-info-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr auto 1fr;
           gap: 24px;
           margin-bottom: 48px;
+          align-items: start;
         }
         .info-box {
           display: flex;
           flex-direction: column;
           gap: 10px;
         }
-        .status-box {
-          align-items: flex-start;
-        }
         .billed-to-box {
+          align-items: flex-start;
+          text-align: start;
+        }
+        .shipment-box {
+          align-items: center;
+          text-align: center;
+        }
+        .shipment-id-large {
+          font-size: 20px;
+          font-weight: 800;
+          color: #0066FF;
+          font-family: 'Montserrat', sans-serif;
+          letter-spacing: 0.5px;
+        }
+        .status-box {
           align-items: flex-end;
           text-align: end;
         }
@@ -348,14 +360,6 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
         .customer-phone {
           font-size: 15px;
           color: rgba(255,255,255,0.7);
-          font-family: 'Montserrat', sans-serif;
-        }
-        .shipment-ref {
-          font-size: 15px;
-          color: rgba(255,255,255,0.7);
-        }
-        .shipment-ref strong {
-          color: white;
           font-family: 'Montserrat', sans-serif;
         }
 
@@ -473,9 +477,10 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
           .doc-header-right { text-align: center; }
           .doc-header-right > div { justify-content: center !important; }
           .doc-header-right > div > div { text-align: center !important; }
-          .doc-info-grid { grid-template-columns: 1fr; gap: 40px; }
-          .status-box { align-items: center; }
+          .doc-info-grid { grid-template-columns: 1fr; gap: 32px; }
+          .status-box { align-items: center; text-align: center; }
           .billed-to-box { align-items: center; text-align: center; }
+          .shipment-box { align-items: center; text-align: center; }
           .doc-summary-box { width: 100%; }
           .doc-table-wrapper { border-radius: 8px; }
           .doc-table th, .doc-table td { padding: 12px 10px; font-size: 13px; }
@@ -538,12 +543,13 @@ export default function InvoicePublicPage({ params }: { params: Promise<{ locale
           .doc-contact { color: #555 !important; }
           .doc-header { border-bottom: 2px solid #eee !important; }
           
-          .logo-inner { fill: #000 !important; }
+          .doc-logo-img { filter: none !important; }
           
           .info-label { color: #777 !important; }
           .customer-name { color: #111 !important; }
-          .customer-phone, .shipment-ref { color: #444 !important; }
-          .shipment-ref strong { color: #111 !important; }
+          .customer-phone { color: #444 !important; }
+          .shipment-id-large { color: #0066FF !important; }
+          .shipment-id-large strong { color: #0066FF !important; }
 
           .doc-table-wrapper { border: 1px solid #e2e8f0 !important; }
           .doc-table th {

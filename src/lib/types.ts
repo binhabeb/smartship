@@ -39,8 +39,15 @@ export interface ShipmentDB {
 }
 
 export interface UserRole {
+  id?: string;
   email: string;
-  role: 'admin' | 'manager' | 'staff';
+  full_name?: string;
+  role: 'admin' | 'manager' | 'data_entry' | 'supervisor';
+  is_active?: boolean;
+  invitation_token?: string;
+  invitation_expires_at?: string;
+  auth_user_id?: string;
+  created_at?: string;
 }
 
 // --- Frontend Display Types (camelCase, used in UI components) ---
