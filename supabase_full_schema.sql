@@ -79,6 +79,7 @@ CREATE TABLE user_roles (
     full_name TEXT,
     role TEXT DEFAULT 'data_entry' CHECK (role IN ('admin', 'manager', 'data_entry', 'supervisor')),
     is_active BOOLEAN DEFAULT false,
+    auth_user_id UUID,
     invitation_token TEXT UNIQUE,
     invitation_expires_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
