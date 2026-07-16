@@ -59,8 +59,15 @@ export default function AdminLayout({
         setAuthenticated(true);
         setUserName(session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User');
         setUserEmail(session.user.email || '');
-        const { data: roleData } = await supabase.from('user_roles').select('role').eq('email', session.user.email).single();
-        if (roleData) setUserRole(roleData.role);
+        const { data: roleData } = await supabase.from('user_roles').select('role, is_active').eq('email', session.user.email).single();
+        if (roleData && roleData.is_active) {
+          setUserRole(roleData.role);
+        } else {
+          // If no role or inactive, sign out immediately
+          await supabase.auth.signOut();
+          router.push(`/${locale}/admin/login`);
+          return;
+        }
       }
       setLoading(false);
     };
@@ -75,8 +82,13 @@ export default function AdminLayout({
       if (session) {
         setUserName(session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User');
         setUserEmail(session.user.email || '');
-        supabase.from('user_roles').select('role').eq('email', session.user.email).single().then(({ data }) => {
-          if (data) setUserRole(data.role);
+        supabase.from('user_roles').select('role, is_active').eq('email', session.user.email).single().then(async ({ data }) => {
+          if (data && data.is_active) {
+            setUserRole(data.role);
+          } else {
+            await supabase.auth.signOut();
+            router.push(`/${locale}/admin/login`);
+          }
         });
       }
     });
