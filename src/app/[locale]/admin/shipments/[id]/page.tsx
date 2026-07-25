@@ -101,7 +101,7 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
       .replace(/{PHONE}/g, settings?.contact_phone || '+8619383079080')
       .replace(/{WEBSITE}/g, 'www.binhabeb.com');
     
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, '_blank');
     router.push(`/${locale}/admin/shipments`);
   };
 
