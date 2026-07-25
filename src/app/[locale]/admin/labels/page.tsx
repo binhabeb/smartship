@@ -316,7 +316,7 @@ export default function AdminLabelsPage({ params }: { params: Promise<{ locale: 
                     <td style={{ fontFamily: 'var(--font-en)', fontSize: 13 }}>{label.shipment_date || '—'}</td>
                     <td style={{ textAlign: 'end' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                        <Link href={`/${locale}/admin/labels/${label.id}`} target="_blank" className="btn-primary" style={{ padding: '6px 12px', fontSize: 11, textDecoration: 'none' }}>
+                        <Link href={`/${locale}/label/${label.id}`} target="_blank" className="btn-primary" style={{ padding: '6px 12px', fontSize: 11, textDecoration: 'none' }}>
                           🖨️ {loc === 'ar' ? 'طباعة PDF' : 'Print PDF'}
                         </Link>
                         <button onClick={() => handleDelete(label.id)} disabled={deleting === label.id} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 11, color: 'var(--danger)' }}>
