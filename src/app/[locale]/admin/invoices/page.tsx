@@ -161,6 +161,13 @@ export default function AdminInvoicesPage({ params }: { params: Promise<{ locale
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {/* Column Headers for clarity */}
+                <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr auto', gap: 12, color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, padding: '0 4px', marginBottom: -4 }}>
+                  <div>{loc === 'ar' ? 'وصف البند' : 'Description'}</div>
+                  <div>{loc === 'ar' ? 'الكمية' : 'Qty'}</div>
+                  <div>{loc === 'ar' ? 'السعر (SAR)' : 'Price (SAR)'}</div>
+                  <div style={{ width: 32 }}></div>
+                </div>
                 {invoiceItems.map((item, index) => (
                   <div key={index} style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr auto', gap: 12, alignItems: 'center' }}>
                     <input required className="input-glass" type="text" placeholder={loc === 'ar' ? 'وصف البند (مثال: أجور شحن)' : 'Description'} value={item.description} onChange={e => { const newItems = [...invoiceItems]; newItems[index].description = e.target.value; setInvoiceItems(newItems); }} />
