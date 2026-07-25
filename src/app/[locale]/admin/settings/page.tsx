@@ -59,6 +59,39 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate WhatsApp templates
+    const requiredInvoice = ['{CUSTOMER_NAME}', '{INVOICE_LINK}'];
+    const requiredShipment = ['{CUSTOMER_NAME}', '{SHIPMENT_ID}', '{STATUS}'];
+    const requiredWelcome = ['{CUSTOMER_NAME}'];
+
+    const checkMissing = (text: string | undefined, required: string[]) => {
+      if (!text) return null;
+      for (const req of required) {
+        if (!text.includes(req)) return req;
+      }
+      return null;
+    };
+
+    let validationError = null;
+    let missing = checkMissing(settings.wa_template_invoice_ar, requiredInvoice) || checkMissing(settings.wa_template_invoice_en, requiredInvoice);
+    if (missing) validationError = loc === 'ar' ? `خطأ: قالب الفاتورة ينقصه المتغير الأساسي: ${missing}` : `Error: Invoice template missing variable: ${missing}`;
+    
+    if (!validationError) {
+      missing = checkMissing(settings.wa_template_shipment_ar, requiredShipment) || checkMissing(settings.wa_template_shipment_en, requiredShipment);
+      if (missing) validationError = loc === 'ar' ? `خطأ: قالب حالة الشحنة ينقصه المتغير الأساسي: ${missing}` : `Error: Shipment template missing variable: ${missing}`;
+    }
+
+    if (!validationError) {
+      missing = checkMissing(settings.wa_template_welcome_ar, requiredWelcome) || checkMissing(settings.wa_template_welcome_en, requiredWelcome);
+      if (missing) validationError = loc === 'ar' ? `خطأ: قالب استلام الطلب ينقصه المتغير الأساسي: ${missing}` : `Error: Welcome template missing variable: ${missing}`;
+    }
+
+    if (validationError) {
+      alert(validationError);
+      return;
+    }
+
     setSaving(true);
     try {
       const { error } = await supabase
