@@ -17,6 +17,12 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
     maintenance_mode: false,
     fixed_cbm_rate: 150,
     office_commission: 5,
+    wa_template_invoice_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢',
+    wa_template_invoice_en: 'Hello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢',
+    wa_template_shipment_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!',
+    wa_template_shipment_en: 'Hello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!',
+    wa_template_welcome_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢',
+    wa_template_welcome_en: 'Hello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢'
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -139,6 +145,91 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
             <input type="checkbox" checked={settings.maintenance_mode} onChange={e => setSettings({...settings, maintenance_mode: e.target.checked})} style={{ width: 20, height: 20, accentColor: 'var(--primary)' }} />
             <span style={{ fontWeight: 600 }}>{loc === 'ar' ? 'وضع الصيانة (تعطيل تتبع الطلبات للعملاء)' : 'Maintenance Mode (Disable tracking for customers)'}</span>
           </label>
+        </div>
+
+        <div className="glass-card" style={{ padding: 32 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>{loc === 'ar' ? 'قوالب رسائل الواتساب' : 'WhatsApp Templates'}</h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 24 }}>
+            {loc === 'ar' 
+              ? 'يمكنك تعديل محتوى الرسائل التلقائية هنا. استخدم المتغيرات (مثال: {CUSTOMER_NAME}) ليتم استبدالها تلقائياً بالبيانات الحقيقية عند الإرسال.' 
+              : 'You can edit the automatic message content here. Use variables (e.g., {CUSTOMER_NAME}) to be replaced automatically with real data when sending.'}
+          </p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+            {/* Invoice Template */}
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 24 }}>
+              <h4 style={{ fontWeight: 600, marginBottom: 8, color: 'var(--primary)' }}>{loc === 'ar' ? 'رسالة الفاتورة الجديدة' : 'New Invoice Message'}</h4>
+              <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {loc === 'ar' ? 'المتغيرات المتاحة:' : 'Available Variables:'}
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{CUSTOMER_NAME}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{SHIPMENT_ID}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{AMOUNT}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{INVOICE_LINK}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{TRACKING_LINK}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_invoice_ar || ''} onChange={e => setSettings({...settings, wa_template_invoice_ar: e.target.value})} dir="rtl" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_invoice_en || ''} onChange={e => setSettings({...settings, wa_template_invoice_en: e.target.value})} dir="ltr" />
+                </div>
+              </div>
+            </div>
+
+            {/* Shipment Update Template */}
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 24 }}>
+              <h4 style={{ fontWeight: 600, marginBottom: 8, color: 'var(--primary)' }}>{loc === 'ar' ? 'رسالة تحديث حالة الشحنة' : 'Shipment Update Message'}</h4>
+              <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {loc === 'ar' ? 'المتغيرات المتاحة:' : 'Available Variables:'}
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{CUSTOMER_NAME}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{SHIPMENT_ID}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{STATUS}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PRODUCT}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{TRACKING_LINK}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_shipment_ar || ''} onChange={e => setSettings({...settings, wa_template_shipment_ar: e.target.value})} dir="rtl" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_shipment_en || ''} onChange={e => setSettings({...settings, wa_template_shipment_en: e.target.value})} dir="ltr" />
+                </div>
+              </div>
+            </div>
+
+            {/* Welcome Template */}
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 24 }}>
+              <h4 style={{ fontWeight: 600, marginBottom: 8, color: 'var(--primary)' }}>{loc === 'ar' ? 'رسالة استلام الطلب' : 'Request Received Welcome Message'}</h4>
+              <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {loc === 'ar' ? 'المتغيرات المتاحة:' : 'Available Variables:'}
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{CUSTOMER_NAME}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PRODUCT}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{DESCRIPTION}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{DATE}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
+                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_welcome_ar || ''} onChange={e => setSettings({...settings, wa_template_welcome_ar: e.target.value})} dir="rtl" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
+                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_welcome_en || ''} onChange={e => setSettings({...settings, wa_template_welcome_en: e.target.value})} dir="ltr" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

@@ -114,11 +114,23 @@ export default function AdminRequestsPage({ params }: { params: Promise<{ locale
   };
 
   // WhatsApp welcome message
-  const sendWelcomeWhatsApp = (req: ImportRequest) => {
+  const sendWelcomeWhatsApp = async (req: ImportRequest) => {
     const phone = req.customer_phone.replace(/[^0-9+]/g, '').replace('+', '');
-    const msg = loc === 'ar'
-      ? `مرحباً ${req.customer_name}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: ${req.product_name}\n📝 الوصف: ${req.product_description || 'غير محدد'}\n📅 التاريخ: ${new Date(req.created_at).toLocaleDateString('ar-SA')}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: +8619383079080\n🌐 الموقع: www.binhabeb.com\n\nفريق بن حبيب 🚢`
-      : `Hello ${req.customer_name}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: ${req.product_name}\n📝 Description: ${req.product_description || 'N/A'}\n📅 Date: ${new Date(req.created_at).toLocaleDateString('en-US')}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: +8619383079080\n🌐 Website: www.binhabeb.com\n\nBin Habib Team 🚢`;
+    
+    // Fetch WhatsApp templates from settings
+    const { data: settings } = await supabase.from('site_settings').select('*').single();
+    
+    let msg = loc === 'ar'
+      ? settings?.wa_template_welcome_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢`
+      : settings?.wa_template_welcome_en || `Hello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢`;
+
+    msg = msg
+      .replace(/{CUSTOMER_NAME}/g, req.customer_name || '')
+      .replace(/{PRODUCT}/g, req.product_name || '')
+      .replace(/{DESCRIPTION}/g, req.product_description || (loc === 'ar' ? 'غير محدد' : 'N/A'))
+      .replace(/{DATE}/g, new Date(req.created_at).toLocaleDateString(loc === 'ar' ? 'ar-SA' : 'en-US'))
+      .replace(/{PHONE}/g, settings?.contact_phone || '+8619383079080')
+      .replace(/{WEBSITE}/g, 'www.binhabeb.com');
     
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   };

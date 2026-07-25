@@ -120,9 +120,21 @@ export default function AdminInvoicesPage({ params }: { params: Promise<{ locale
     }
     phone = phone.replace(/[^0-9+]/g, '').replace('+', '');
     
-    const msg = loc === 'ar'
-      ? `مرحباً ${inv.customer_name}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *${inv.shipment_id}*.\n\n💰 المبلغ الإجمالي: *${inv.amount} SAR*\n🧾 عرض الفاتورة: ${invoiceLink}\n📦 تتبع الشحنة: ${trackingLink}\n\n📞 للتواصل واتساب: +8619383079080\n🌐 الموقع: www.binhabeb.com\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢`
-      : `Hello ${inv.customer_name}! 👋\n\nA new invoice has been issued for your shipment *${inv.shipment_id}*.\n\n💰 Total: *${inv.amount} SAR*\n🧾 View Invoice: ${invoiceLink}\n📦 Track Shipment: ${trackingLink}\n\n📞 WhatsApp: +8619383079080\n🌐 Website: www.binhabeb.com\n\nThank you for choosing Bin Habib Trading & Import 🚢`;
+    // Fetch WhatsApp templates from settings
+    const { data: settings } = await supabase.from('site_settings').select('*').single();
+    
+    let msg = loc === 'ar'
+      ? settings?.wa_template_invoice_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢`
+      : settings?.wa_template_invoice_en || `Hello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢`;
+      
+    msg = msg
+      .replace(/{CUSTOMER_NAME}/g, inv.customer_name || '')
+      .replace(/{SHIPMENT_ID}/g, inv.shipment_id || '')
+      .replace(/{AMOUNT}/g, String(inv.amount || '0'))
+      .replace(/{INVOICE_LINK}/g, invoiceLink)
+      .replace(/{TRACKING_LINK}/g, trackingLink)
+      .replace(/{PHONE}/g, settings?.contact_phone || '+8619383079080')
+      .replace(/{WEBSITE}/g, 'www.binhabeb.com');
     
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   };

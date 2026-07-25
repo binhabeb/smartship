@@ -81,15 +81,27 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
     }
   };
 
-  const sendWhatsAppUpdate = () => {
+  const sendWhatsAppUpdate = async () => {
     if (!shipment) return;
     const phone = shipment.customer_phone.replace(/[^0-9+]/g, '').replace('+', '');
-    const url = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
     const trackingLink = `${url}/${locale}/tracking?id=${shipment.id}`;
     
-    const msg = loc === 'ar'
-      ? `مرحباً ${shipment.customer_name}! 👋\n\nتم تحديث حالة شحنتك رقم *${shipment.id}*:\n\n📍 الحالة الحالية: *${getStatusLabelAr(newStatus)}*\n📦 المنتج: ${shipment.product}\n\n🔗 تتبع الشحنة: ${trackingLink}\n\n📞 للتواصل واتساب: +8619383079080\n🌐 الموقع: www.binhabeb.com\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!`
-      : `Hello ${shipment.customer_name}! 👋\n\nYour shipment *${shipment.id}* has been updated:\n\n📍 Current Status: *${getStatusLabelEn(newStatus)}*\n📦 Product: ${shipment.product}\n\n🔗 Track Shipment: ${trackingLink}\n\n📞 WhatsApp: +8619383079080\n🌐 Website: www.binhabeb.com\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!`;
+    // Fetch WhatsApp templates from settings
+    const { data: settings } = await supabase.from('site_settings').select('*').single();
+    
+    let msg = loc === 'ar'
+      ? settings?.wa_template_shipment_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!`
+      : settings?.wa_template_shipment_en || `Hello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!`;
+
+    msg = msg
+      .replace(/{CUSTOMER_NAME}/g, shipment.customer_name || '')
+      .replace(/{SHIPMENT_ID}/g, shipment.id || '')
+      .replace(/{STATUS}/g, loc === 'ar' ? getStatusLabelAr(newStatus) : getStatusLabelEn(newStatus))
+      .replace(/{PRODUCT}/g, shipment.product || '')
+      .replace(/{TRACKING_LINK}/g, trackingLink)
+      .replace(/{PHONE}/g, settings?.contact_phone || '+8619383079080')
+      .replace(/{WEBSITE}/g, 'www.binhabeb.com');
     
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     router.push(`/${locale}/admin/shipments`);
