@@ -58,15 +58,15 @@ export default function AdminLayout({
         router.push(`/${locale}/admin/login`);
       } else if (session && isLoginPage) {
         router.push(`/${locale}/admin/dashboard`);
-      } else if (session) {
+      } else if (session && !isPublicAdminPage) {
         setAuthenticated(true);
         setUserName(session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User');
         setUserEmail(session.user.email || '');
-        const { data: roleData } = await supabase.from('user_roles').select('role, is_active').eq('email', session.user.email).single();
+        const { data: roleData, error } = await supabase.from('user_roles').select('role, is_active').eq('email', session.user.email).single();
         if (roleData && roleData.is_active) {
           setUserRole(roleData.role);
         } else {
-          // If no role or inactive, sign out immediately
+          console.error("Layout auth check: user not active", error, roleData);
           await supabase.auth.signOut();
           router.push(`/${locale}/admin/login`);
           return;
@@ -82,7 +82,7 @@ export default function AdminLayout({
         router.push(`/${locale}/admin/dashboard`);
       }
       setAuthenticated(!!session);
-      if (session) {
+      if (session && !isPublicAdminPage) {
         setUserName(session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User');
         setUserEmail(session.user.email || '');
         supabase.from('user_roles').select('role, is_active').eq('email', session.user.email).single().then(async ({ data }) => {
