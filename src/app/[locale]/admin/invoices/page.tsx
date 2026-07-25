@@ -123,7 +123,7 @@ export default function AdminInvoicesPage({ params }: { params: Promise<{ locale
     // Fetch WhatsApp templates from settings
     const { data: settings } = await supabase.from('site_settings').select('*').single();
     
-    let msg = settings?.wa_template_invoice_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢`;
+    let msg = settings?.wa_template_invoice_ar || 'مرحباً {CUSTOMER_NAME}! \uD83D\uDC4B\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n\uD83D\uDCB0 المبلغ الإجمالي: *{AMOUNT} SAR*\n\uD83E\uDDFE عرض الفاتورة: {INVOICE_LINK}\n\uD83D\uDCE6 تتبع الشحنة: {TRACKING_LINK}\n\n\uD83D\uDCDE للتواصل واتساب: {PHONE}\n\uD83C\uDF10 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد \uD83D\uDEA2\n\n---\n\nHello {CUSTOMER_NAME}! \uD83D\uDC4B\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n\uD83D\uDCB0 Total: *{AMOUNT} SAR*\n\uD83E\uDDFE View Invoice: {INVOICE_LINK}\n\uD83D\uDCE6 Track Shipment: {TRACKING_LINK}\n\n\uD83D\uDCDE WhatsApp: {PHONE}\n\uD83C\uDF10 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import \uD83D\uDEA2';
       
     msg = msg
       .replace(/{CUSTOMER_NAME}/g, inv.customer_name || '')
