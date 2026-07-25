@@ -47,11 +47,14 @@ export default function AdminLayout({
   const [isSearching, setIsSearching] = useState(false);
 
   const isLoginPage = pathname.includes('/admin/login');
+  const isInvitePage = pathname.includes('/admin/invite');
+  const isCallbackPage = pathname.includes('/admin/auth/callback');
+  const isPublicAdminPage = isLoginPage || isInvitePage || isCallbackPage;
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session && !isLoginPage) {
+      if (!session && !isPublicAdminPage) {
         router.push(`/${locale}/admin/login`);
       } else if (session && isLoginPage) {
         router.push(`/${locale}/admin/dashboard`);
@@ -73,7 +76,7 @@ export default function AdminLayout({
     };
     checkAuth();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' && !isLoginPage) {
+      if (event === 'SIGNED_OUT' && !isPublicAdminPage) {
         router.push(`/${locale}/admin/login`);
       } else if (event === 'SIGNED_IN' && isLoginPage) {
         router.push(`/${locale}/admin/dashboard`);
@@ -133,7 +136,7 @@ export default function AdminLayout({
     </div>
   );
 
-  if (isLoginPage) return <>{children}</>;
+  if (isPublicAdminPage) return <>{children}</>;
   if (!authenticated) return null;
 
   const menuItems = [
