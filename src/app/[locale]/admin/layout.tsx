@@ -144,6 +144,7 @@ export default function AdminLayout({
     { href: `/${locale}/admin/requests`, label: t.admin?.requests || 'Requests', icon: '📋', id: 'requests' },
     { href: `/${locale}/admin/shipments`, label: t.admin?.shipments || 'Shipments', icon: '📦', id: 'shipments' },
     { href: `/${locale}/admin/invoices`, label: loc === 'ar' ? 'الفواتير' : 'Invoices', icon: '🧾', id: 'invoices', restricted: ['admin', 'manager'] },
+    { href: `/${locale}/admin/labels`, label: loc === 'ar' ? 'بوليصات الشحن' : 'Shipping Labels', icon: '🏷️', id: 'labels', restricted: ['admin', 'manager'] },
     { href: `/${locale}/admin/reports`, label: loc === 'ar' ? 'التقارير' : 'Reports', icon: '📈', id: 'reports' },
     { href: `/${locale}/admin/audit`, label: loc === 'ar' ? 'سجل النشاطات' : 'Activity Log', icon: '📝', id: 'audit' },
     { href: `/${locale}/admin/users`, label: loc === 'ar' ? 'إدارة الموظفين' : 'Users & Roles', icon: '👥', id: 'users', restricted: ['admin'] },
