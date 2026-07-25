@@ -120,9 +120,7 @@ export default function AdminRequestsPage({ params }: { params: Promise<{ locale
     // Fetch WhatsApp templates from settings
     const { data: settings } = await supabase.from('site_settings').select('*').single();
     
-    let msg = loc === 'ar'
-      ? settings?.wa_template_welcome_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢`
-      : settings?.wa_template_welcome_en || `Hello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢`;
+    let msg = settings?.wa_template_welcome_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢`;
 
     msg = msg
       .replace(/{CUSTOMER_NAME}/g, req.customer_name || '')

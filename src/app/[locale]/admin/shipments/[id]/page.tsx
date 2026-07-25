@@ -90,9 +90,7 @@ export default function AdminShipmentDetails({ params }: { params: Promise<{ loc
     // Fetch WhatsApp templates from settings
     const { data: settings } = await supabase.from('site_settings').select('*').single();
     
-    let msg = loc === 'ar'
-      ? settings?.wa_template_shipment_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!`
-      : settings?.wa_template_shipment_en || `Hello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!`;
+    let msg = settings?.wa_template_shipment_ar || `مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!`;
 
     msg = msg
       .replace(/{CUSTOMER_NAME}/g, shipment.customer_name || '')

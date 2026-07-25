@@ -17,12 +17,9 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
     maintenance_mode: false,
     fixed_cbm_rate: 150,
     office_commission: 5,
-    wa_template_invoice_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢',
-    wa_template_invoice_en: 'Hello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢',
-    wa_template_shipment_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!',
-    wa_template_shipment_en: 'Hello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!',
-    wa_template_welcome_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢',
-    wa_template_welcome_en: 'Hello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢'
+    wa_template_invoice_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢',
+    wa_template_shipment_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!',
+    wa_template_welcome_ar: 'مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -48,7 +45,13 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
           .single();
         
         if (settingsData) {
-          setSettings(settingsData);
+          // Fill missing templates with defaults if they are null in the database
+          setSettings({
+            ...settingsData,
+            wa_template_invoice_ar: settingsData.wa_template_invoice_ar || 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم إصدار فاتورة جديدة لشحنتك رقم *{SHIPMENT_ID}*.\n\n💰 المبلغ الإجمالي: *{AMOUNT} SAR*\n🧾 عرض الفاتورة: {INVOICE_LINK}\n📦 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nشكراً لثقتكم بمؤسسة بن حبيب للتجارة والاستيراد 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nA new invoice has been issued for your shipment *{SHIPMENT_ID}*.\n\n💰 Total: *{AMOUNT} SAR*\n🧾 View Invoice: {INVOICE_LINK}\n📦 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nThank you for choosing Bin Habib Trading & Import 🚢',
+            wa_template_shipment_ar: settingsData.wa_template_shipment_ar || 'مرحباً {CUSTOMER_NAME}! 👋\n\nتم تحديث حالة شحنتك رقم *{SHIPMENT_ID}*:\n\n📍 الحالة الجديدة: *{STATUS}*\n📦 المنتج: {PRODUCT}\n\n🔗 تتبع الشحنة: {TRACKING_LINK}\n\n📞 للتواصل واتساب: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nمؤسسة بن حبيب للتجارة والاستيراد 🚢\nنسعد بخدمتكم دائماً!\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nYour shipment *{SHIPMENT_ID}* has been updated:\n\n📍 Current Status: *{STATUS}*\n📦 Product: {PRODUCT}\n\n🔗 Track Shipment: {TRACKING_LINK}\n\n📞 WhatsApp: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Trading & Import 🚢\nAlways happy to serve you!',
+            wa_template_welcome_ar: settingsData.wa_template_welcome_ar || 'مرحباً {CUSTOMER_NAME}! 👋\n\nشكراً لتواصلك مع *مؤسسة بن حبيب للتجارة والاستيراد*.\n\nتم استلام طلبك بنجاح:\n📦 المنتج: {PRODUCT}\n📝 الوصف: {DESCRIPTION}\n📅 التاريخ: {DATE}\n\nسنقوم بمراجعة طلبك والرد عليك في أقرب وقت.\n\n📞 للتواصل: {PHONE}\n🌐 الموقع: {WEBSITE}\n\nفريق بن حبيب 🚢\n\n---\n\nHello {CUSTOMER_NAME}! 👋\n\nThank you for contacting *Bin Habib Trading & Import*.\n\nYour request has been received:\n📦 Product: {PRODUCT}\n📝 Description: {DESCRIPTION}\n📅 Date: {DATE}\n\nWe will review your request and get back to you shortly.\n\n📞 Contact: {PHONE}\n🌐 Website: {WEBSITE}\n\nBin Habib Team 🚢',
+          });
         }
       }
       setLoading(false);
@@ -74,16 +77,16 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
     };
 
     let validationError = null;
-    let missing = checkMissing(settings.wa_template_invoice_ar, requiredInvoice) || checkMissing(settings.wa_template_invoice_en, requiredInvoice);
+    let missing = checkMissing(settings.wa_template_invoice_ar, requiredInvoice);
     if (missing) validationError = loc === 'ar' ? `خطأ: قالب الفاتورة ينقصه المتغير الأساسي: ${missing}` : `Error: Invoice template missing variable: ${missing}`;
     
     if (!validationError) {
-      missing = checkMissing(settings.wa_template_shipment_ar, requiredShipment) || checkMissing(settings.wa_template_shipment_en, requiredShipment);
+      missing = checkMissing(settings.wa_template_shipment_ar, requiredShipment);
       if (missing) validationError = loc === 'ar' ? `خطأ: قالب حالة الشحنة ينقصه المتغير الأساسي: ${missing}` : `Error: Shipment template missing variable: ${missing}`;
     }
 
     if (!validationError) {
-      missing = checkMissing(settings.wa_template_welcome_ar, requiredWelcome) || checkMissing(settings.wa_template_welcome_en, requiredWelcome);
+      missing = checkMissing(settings.wa_template_welcome_ar, requiredWelcome);
       if (missing) validationError = loc === 'ar' ? `خطأ: قالب استلام الطلب ينقصه المتغير الأساسي: ${missing}` : `Error: Welcome template missing variable: ${missing}`;
     }
 
@@ -202,14 +205,10 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_invoice_ar || ''} onChange={e => setSettings({...settings, wa_template_invoice_ar: e.target.value})} dir="rtl" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_invoice_en || ''} onChange={e => setSettings({...settings, wa_template_invoice_en: e.target.value})} dir="ltr" />
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي + إنجليزي في نفس الرسالة)' : 'Message (Bilingual)'}</label>
+                  <textarea className="input-glass" rows={12} style={{ resize: 'vertical' }} value={settings.wa_template_invoice_ar || ''} onChange={e => setSettings({...settings, wa_template_invoice_ar: e.target.value})} dir="rtl" />
                 </div>
               </div>
             </div>
@@ -227,14 +226,10 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_shipment_ar || ''} onChange={e => setSettings({...settings, wa_template_shipment_ar: e.target.value})} dir="rtl" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_shipment_en || ''} onChange={e => setSettings({...settings, wa_template_shipment_en: e.target.value})} dir="ltr" />
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي + إنجليزي في نفس الرسالة)' : 'Message (Bilingual)'}</label>
+                  <textarea className="input-glass" rows={12} style={{ resize: 'vertical' }} value={settings.wa_template_shipment_ar || ''} onChange={e => setSettings({...settings, wa_template_shipment_ar: e.target.value})} dir="rtl" />
                 </div>
               </div>
             </div>
@@ -251,14 +246,10 @@ export default function AdminSettingsPage({ params }: { params: Promise<{ locale
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{PHONE}'}</code>
                 <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 4 }}>{'{WEBSITE}'}</code>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي)' : 'Message (Arabic)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_welcome_ar || ''} onChange={e => setSettings({...settings, wa_template_welcome_ar: e.target.value})} dir="rtl" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (إنجليزي)' : 'Message (English)'}</label>
-                  <textarea className="input-glass" rows={8} style={{ resize: 'vertical' }} value={settings.wa_template_welcome_en || ''} onChange={e => setSettings({...settings, wa_template_welcome_en: e.target.value})} dir="ltr" />
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{loc === 'ar' ? 'الرسالة (عربي + إنجليزي في نفس الرسالة)' : 'Message (Bilingual)'}</label>
+                  <textarea className="input-glass" rows={12} style={{ resize: 'vertical' }} value={settings.wa_template_welcome_ar || ''} onChange={e => setSettings({...settings, wa_template_welcome_ar: e.target.value})} dir="rtl" />
                 </div>
               </div>
             </div>
