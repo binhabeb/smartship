@@ -271,9 +271,19 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
           <div style={{ width: 200, background: ORANGE, clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 900 }} dir="rtl">نقل بحري وجوي</div>
             <div style={{ fontSize: 12, fontWeight: 800 }}>SEA &amp; AIR FREIGHT</div>
-            <div style={{ display: 'flex', gap: 14, marginTop: 3 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M2 21h20"/><path d="M4 17l1.5-6h13L20 17"/><path d="M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/></svg>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6.5 4L5 16.5l-3.3-1.1-1.4 1.4L4.6 21l4.2-4.3 4.5 4.5 1.8-1.7.4-6.8 5.6-5.6"/></svg>
+            <div style={{ display: 'flex', gap: 14, marginTop: 4 }}>
+              {/* Ship in a circle */}
+              <div style={{ width: 30, height: 30, borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                  <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 3.25-2 6-2s3.5 2 6 2 1.9-.5 2.5-1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 10v4"/><path d="M12 2v3"/>
+                </svg>
+              </div>
+              {/* Airplane in a circle */}
+              <div style={{ width: 30, height: 30, borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                  <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6.5 4L5 16.5l-3.3-1.1-1.4 1.4L4.6 21l4.2-4.3 4.5 4.5 1.8-1.7.4-6.8 5.6-5.6"/>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -284,7 +294,7 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
             { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>, ar: 'أعلى', en: 'THIS SIDE UP' },
             { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 2C7 2 3 7 3 12h18c0-5-4-10-9-10z"/><path d="M12 12v6a2 2 0 0 0 4 0"/><path d="M8 16l-2 2"/><path d="M12 18l-2 2"/><path d="M16 16l-2 2"/></svg>, ar: 'يحفظ جافاً', en: 'KEEP DRY' },
             { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 15v6"/><path d="M8 21h8"/><path d="M6 3l12 0l-3.5 12h-5z"/><path d="M10.5 3l-1.5 5 3 2.5-3 2.5"/></svg>, ar: 'قابل للكسر', en: 'FRAGILE' },
-            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M5 16h14"/><path d="M8 12h8v4H8z"/><path d="M2 18s2 2 6 2h8c4 0 6-2 6-2"/></svg>, ar: 'يتعامل بحذر', en: 'HANDLE WITH CARE' },
+            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>, ar: 'يتعامل بحذر', en: 'HANDLE WITH CARE' },
           ].map((h, i) => (
             <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, borderRight: '1.5px solid #e0e0e0' }}>
               {h.svg}
