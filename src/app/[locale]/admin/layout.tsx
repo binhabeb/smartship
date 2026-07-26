@@ -154,7 +154,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#02080C', color: 'white', direction: loc === 'ar' ? 'rtl' : 'ltr', transform: 'scale(0.7)', transformOrigin: 'top left', width: `${Math.ceil(100/0.7)}%` }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#02080C', color: 'white', direction: loc === 'ar' ? 'rtl' : 'ltr' }}>
       <style>{`
         :root { --elec-blue: #00F0FF; --elec-blue-glow: rgba(0, 240, 255, 0.3); --bg-midnight: #02080C; }
         body { background: radial-gradient(circle at 50% -20%, #051A24 0%, #02080C 100%); margin: 0; }

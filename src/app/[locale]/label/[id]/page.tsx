@@ -234,8 +234,16 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
           </div>
           {/* Aden */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12, borderRight: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ width: 42, height: 42, border: '2px solid #fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+            {/* Yemen Flag Circle */}
+            <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid rgba(255,255,255,0.3)' }}>
+              <svg width="42" height="42" viewBox="0 0 42 42">
+                {/* Red top third */}
+                <rect x="0" y="0" width="42" height="14" fill="#CE1126"/>
+                {/* White middle third */}
+                <rect x="0" y="14" width="42" height="14" fill="#FFFFFF"/>
+                {/* Black bottom third */}
+                <rect x="0" y="28" width="42" height="14" fill="#000000"/>
+              </svg>
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
@@ -256,7 +264,7 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.8.33 1.63.7 2.81" /></svg>
-              <span style={{ fontSize: 13, fontWeight: 700 }} dir="ltr">{customerPhone}</span>
+              <span style={{ fontSize: 13, fontWeight: 700 }} dir="ltr">{adenPhone}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
