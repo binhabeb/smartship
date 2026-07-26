@@ -154,7 +154,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#02080C', color: 'white', direction: loc === 'ar' ? 'rtl' : 'ltr' }}>
+    <div className="admin-main-wrapper" style={{ display: 'flex', minHeight: '100vh', background: '#02080C', color: 'white', direction: loc === 'ar' ? 'rtl' : 'ltr' }}>
       <style>{`
         :root { --elec-blue: #00F0FF; --elec-blue-glow: rgba(0, 240, 255, 0.3); --bg-midnight: #02080C; }
         body { background: radial-gradient(circle at 50% -20%, #051A24 0%, #02080C 100%); margin: 0; }
@@ -166,6 +166,12 @@ export default function AdminLayout({
         select { background-color: rgba(255,255,255,0.03) !important; color: white !important; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.1); }
         ::-webkit-scrollbar-thumb:hover { background: var(--elec-blue-glow); }
+
+        @media (min-width: 1025px) {
+          .admin-main-wrapper {
+            zoom: 0.82;
+          }
+        }
       `}</style>
 
       {/* Sidebar Overlay on Mobile */}
