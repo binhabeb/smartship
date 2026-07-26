@@ -51,7 +51,7 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
       case 'map': return <svg {...props}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>;
       case 'box': return <svg {...props}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
       case 'globe': return <svg {...props}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
-      case 'weight': return <svg {...props}><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>;
+      case 'weight': return <svg {...props}><circle cx="12" cy="5" r="3"/><path d="M6.5 8h11l2 12h-15l2-12z"/></svg>;
       case 'cube': return <svg {...props}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>;
       case 'boxes': return <svg {...props}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>;
       default: return null;
@@ -128,7 +128,10 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
 
           {/* Orange corner */}
           <div style={{ position: 'absolute', top: 0, right: 0, width: 160, height: 120, overflow: 'hidden', zIndex: 1 }}>
-            <svg width="160" height="120" viewBox="0 0 160 120"><path d="M30 120 C 80 120, 120 50, 160 0 L 160 120 Z" fill={ORANGE}/><path d="M90 120 C 130 120, 150 80, 160 25 L 160 0 C 120 35, 90 90, 30 90 Z" fill={NAVY}/></svg>
+            <svg width="160" height="120" viewBox="0 0 160 120" preserveAspectRatio="none">
+              <path d="M0 120 L 160 0 L 160 120 Z" fill={ORANGE}/>
+              <path d="M60 120 L 160 20 L 160 120 Z" fill={NAVY}/>
+            </svg>
             <div style={{ position: 'absolute', top: 12, right: 12, color: '#fff', fontSize: 36, opacity: 0.3 }}>↗</div>
           </div>
         </div>
@@ -150,11 +153,11 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
               <div style={{ fontSize: 22, fontWeight: 900, color: NAVY }} dir="rtl">رقم الشحنة</div>
             </div>
             
-            {/* Big number + QR side by side */}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 0, marginTop: 16 }}>
+            {/* Big number + QR Stacked */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, minHeight: 0, marginTop: 16 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', lineHeight: 1 }}>
-                <span style={{ fontSize: 62, fontWeight: 900, color: NAVY, letterSpacing: -2 }}>{labelPrefix}</span>
-                <span style={{ fontSize: 62, fontWeight: 900, color: ORANGE, letterSpacing: -2 }}>{labelNumber}</span>
+                <span style={{ fontSize: 72, fontWeight: 900, color: NAVY, letterSpacing: -2 }}>{labelPrefix}</span>
+                <span style={{ fontSize: 72, fontWeight: 900, color: ORANGE, letterSpacing: -2 }}>{labelNumber}</span>
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
@@ -166,7 +169,7 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
             </div>
 
             <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 800, color: '#999', letterSpacing: 0.5, marginTop: 'auto', marginBottom: 4 }} dir="rtl">
-              اليمن - SMARTSHIP-{labelNumber}
+              اليمن - BINHABEB-{labelNumber}
             </div>
           </div>
 
@@ -195,7 +198,7 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
         <div style={{ height: 65, display: 'flex', borderTop: `3px solid ${ORANGE}`, flexShrink: 0 }}>
           {[
             { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, ar: 'تاريخ الشحن', en: 'SHIPMENT DATE', val: formatDate(label.shipment_date) },
-            { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M2 21h20"/><path d="M4 17l1.5-6h13L20 17"/><path d="M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/></svg>, ar: 'طريقة الشحن', en: 'SHIPMENT METHOD', val: label.shipment_method || 'SEA FREIGHT' },
+            { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M22 17A20 20 0 0 0 12 15 20 20 0 0 0 2 17l1-5h18l1 5z"/><path d="M4 12v-2a3 3 0 0 1 6 0v2"/><path d="M14 12v-4a3 3 0 0 1 6 0v4"/><path d="M2 20a20 20 0 0 0 10-2 20 20 0 0 0 10 2"/></svg>, ar: 'طريقة الشحن', en: 'SHIPMENT METHOD', val: label.shipment_method || 'SEA FREIGHT' },
             { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>, ar: 'ملاحظات', en: 'REMARKS', val: label.remarks || 'يُحفظ بعيداً عن الرطوبة والحرارة' },
           ].map((item, i) => (
             <div key={i} style={{ flex: i === 2 ? 1.5 : 1, display: 'flex', alignItems: 'center', padding: '0 20px', gap: 14, borderRight: i < 2 ? '1.5px solid #ddd' : 'none' }}>
@@ -279,9 +282,9 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
         <div style={{ height: 42, display: 'flex', alignItems: 'center', background: '#fff', borderTop: '1.5px solid #e0e0e0', flexShrink: 0 }}>
           {[
             { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>, ar: 'أعلى', en: 'THIS SIDE UP' },
-            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 2v10m-5-5l5-5 5 5M4 16c0 4.4 3.6 8 8 8s8-3.6 8-8"/></svg>, ar: 'يحفظ جافاً', en: 'KEEP DRY' },
-            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 2l-7 9h14l-7-9zM5 11v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9"/></svg>, ar: 'قابل للكسر', en: 'FRAGILE' },
-            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M9 13l-3 3-3-3m18 0l-3 3-3-3M2 17v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2M12 4v8M8 8l4-4 4 4"/></svg>, ar: 'يتعامل بحذر', en: 'HANDLE WITH CARE' },
+            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 2C7 2 3 7 3 12h18c0-5-4-10-9-10z"/><path d="M12 12v6a2 2 0 0 0 4 0"/><path d="M8 16l-2 2"/><path d="M12 18l-2 2"/><path d="M16 16l-2 2"/></svg>, ar: 'يحفظ جافاً', en: 'KEEP DRY' },
+            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M12 15v6"/><path d="M8 21h8"/><path d="M6 3l12 0l-3.5 12h-5z"/><path d="M10.5 3l-1.5 5 3 2.5-3 2.5"/></svg>, ar: 'قابل للكسر', en: 'FRAGILE' },
+            { svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={NAVY} strokeWidth="2.5"><path d="M5 16h14"/><path d="M8 12h8v4H8z"/><path d="M2 18s2 2 6 2h8c4 0 6-2 6-2"/></svg>, ar: 'يتعامل بحذر', en: 'HANDLE WITH CARE' },
           ].map((h, i) => (
             <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, borderRight: '1.5px solid #e0e0e0' }}>
               {h.svg}
