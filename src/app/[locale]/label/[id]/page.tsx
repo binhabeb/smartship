@@ -198,7 +198,13 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
         <div style={{ height: 65, display: 'flex', borderTop: `3px solid ${ORANGE}`, flexShrink: 0 }}>
           {[
             { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, ar: 'تاريخ الشحن', en: 'SHIPMENT DATE', val: formatDate(label.shipment_date) },
-            { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M22 17A20 20 0 0 0 12 15 20 20 0 0 0 2 17l1-5h18l1 5z"/><path d="M4 12v-2a3 3 0 0 1 6 0v2"/><path d="M14 12v-4a3 3 0 0 1 6 0v4"/><path d="M2 20a20 20 0 0 0 10-2 20 20 0 0 0 10 2"/></svg>, ar: 'طريقة الشحن', en: 'SHIPMENT METHOD', val: label.shipment_method || 'SEA FREIGHT' },
+            { icon: (
+                <div style={{ width: 34, height: 34, borderRadius: '50%', border: `2px solid ${ORANGE}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2">
+                    <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 3.25-2 6-2s3.5 2 6 2 1.9-.5 2.5-1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 10v4"/><path d="M12 2v3"/>
+                  </svg>
+                </div>
+              ), ar: 'طريقة الشحن', en: 'SHIPMENT METHOD', val: label.shipment_method || 'SEA FREIGHT' },
             { icon: <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>, ar: 'ملاحظات', en: 'REMARKS', val: label.remarks || 'يُحفظ بعيداً عن الرطوبة والحرارة' },
           ].map((item, i) => (
             <div key={i} style={{ flex: i === 2 ? 1.5 : 1, display: 'flex', alignItems: 'center', padding: '0 20px', gap: 14, borderRight: i < 2 ? '1.5px solid #ddd' : 'none' }}>
@@ -268,19 +274,19 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
           {/* Sea & Air */}
-          <div style={{ width: 200, background: ORANGE, clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 900 }} dir="rtl">نقل بحري وجوي</div>
-            <div style={{ fontSize: 12, fontWeight: 800 }}>SEA &amp; AIR FREIGHT</div>
-            <div style={{ display: 'flex', gap: 14, marginTop: 4 }}>
+          <div style={{ width: 200, background: ORANGE, clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingLeft: 18 }}>
+            <div style={{ fontSize: 14, fontWeight: 900, lineHeight: 1.2 }} dir="rtl">نقل بحري وجوي</div>
+            <div style={{ fontSize: 10, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>SEA &amp; AIR FREIGHT</div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 5 }}>
               {/* Ship in a circle */}
-              <div style={{ width: 30, height: 30, borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+              <div style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                   <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 3.25-2 6-2s3.5 2 6 2 1.9-.5 2.5-1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 10v4"/><path d="M12 2v3"/>
                 </svg>
               </div>
               {/* Airplane in a circle */}
-              <div style={{ width: 30, height: 30, borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+              <div style={{ width: 26, height: 26, borderRadius: '50%', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                   <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6.5 4L5 16.5l-3.3-1.1-1.4 1.4L4.6 21l4.2-4.3 4.5 4.5 1.8-1.7.4-6.8 5.6-5.6"/>
                 </svg>
               </div>
