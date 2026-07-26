@@ -38,9 +38,10 @@ export default function LabelPrintPage({ params }: { params: Promise<{ locale: s
   const NAVY = '#1B2A4A';
   const ORANGE = '#E8731A';
 
-  const labelNumParts = label.label_number.split('-');
-  const labelPrefix = labelNumParts[0] + '-';
-  const labelNumber = labelNumParts.slice(1).join('-');
+  const targetId = label.shipment_id || label.label_number || 'BH-0000';
+  const labelNumParts = targetId.split('-');
+  const labelPrefix = labelNumParts.length > 1 ? labelNumParts[0] + '-' : 'BH-';
+  const labelNumber = labelNumParts.length > 1 ? labelNumParts.slice(1).join('-') : labelNumParts[0];
   const destWord = (label.destination || 'ADEN').split(' ')[0].split('-')[0].toUpperCase();
 
   const Icon = ({ type, size = 16 }: { type: string; size?: number }) => {
